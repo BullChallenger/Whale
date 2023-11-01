@@ -21,7 +21,7 @@ import org.hibernate.annotations.Where;
 @DynamicUpdate
 @Where(clause = "IS_DELETED = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class UserEntity {
 
     @Id
     @Column(name = "USER_ID")
@@ -44,7 +44,7 @@ public class User {
     private Boolean isDeleted;
 
     @Builder
-    public User(String email, String username, String nickname, String password, Role role) {
+    public UserEntity(String email, String username, String nickname, String password, Role role) {
         this.email = email;
         this.username = username;
         this.nickname = nickname;
@@ -52,8 +52,8 @@ public class User {
         this.role = role;
     }
 
-    public static final User of(String email, String username, String nickname, String password, Role role) {
-        return User.builder()
+    public static final UserEntity of(String email, String username, String nickname, String password, Role role) {
+        return UserEntity.builder()
                 .email(email)
                 .username(username)
                 .nickname(nickname)
