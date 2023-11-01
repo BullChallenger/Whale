@@ -11,6 +11,7 @@ ___
 
 ### 🔐 JWT 인증 진행 방식
 ![img.png](docs/resource/img.png)
+
 토큰을 검사함과 동시에 각 경우에 대해서 토큰의 유효기간을 확인하여 재발급 여부를 결정한다
 
 - 🐬 case1 : AccessToken 은 만료됐지만, RefreshToken은 유효한 경우 →  RefreshToken 을 검증하여 AccessToken 재발급
