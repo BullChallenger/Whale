@@ -2,7 +2,7 @@
 ___
 
 ### 🛡️ Spring Security 를 활용한 JWT 인증 방식을 구현해보기
-- [ ] ⚒️ User Domain 생성하기
+- [x] ⚒️ User Domain 생성하기
 - [ ] ⚒️ Spring Security Config 생성하기
 - [ ] ⚒️ Jwt Filter 생성하기
     - Refresh Token 과 AccessToken 을 통한 인증 방식을 구현한다
