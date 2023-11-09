@@ -13,11 +13,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
+@DynamicInsert
 @DynamicUpdate
 @Where(clause = "IS_DELETED = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,8 +41,8 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ColumnDefault(value = "false")
-    @Column(name = "IS_DELETED", nullable = false)
+    @ColumnDefault("false")
+    @Column(name = "IS_DELETED", columnDefinition = "TINYINT(1) default false")
     private Boolean isDeleted;
 
     @Builder
