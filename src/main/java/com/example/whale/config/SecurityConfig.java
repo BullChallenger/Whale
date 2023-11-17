@@ -1,6 +1,9 @@
 package com.example.whale.config;
 
+import com.example.whale.security.filter.JsonUsernamePasswordAuthenticationFilter;
+import com.example.whale.security.handler.CustomLoginSuccessHandler;
 import com.example.whale.service.LoginService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 
 @Configuration
@@ -19,6 +23,8 @@ public class SecurityConfig {
 
     private final PasswordEncoder passwordEncoder;
     private final LoginService loginService;
+    private final ObjectMapper objectMapper;
+    private final CustomLoginSuccessHandler customLoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,6 +41,8 @@ public class SecurityConfig {
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/");
+        http
+                .addFilterBefore(jsonUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -46,6 +54,15 @@ public class SecurityConfig {
         daoAuthenticationProvider.setUserDetailsService(loginService);
 
         return new ProviderManager(daoAuthenticationProvider);
+    }
+
+    @Bean
+    public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordAuthenticationFilter() {
+        JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordAuthenticationFilter =
+                new JsonUsernamePasswordAuthenticationFilter(objectMapper, passwordEncoder, customLoginSuccessHandler);
+        jsonUsernamePasswordAuthenticationFilter.setAuthenticationManager(authenticationManager());
+
+        return jsonUsernamePasswordAuthenticationFilter;
     }
 
 }

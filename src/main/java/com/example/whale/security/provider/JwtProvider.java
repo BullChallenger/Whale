@@ -13,7 +13,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JwtProvider {
 
     private static final String ISSUER = "whale_project";
@@ -25,7 +27,7 @@ public class JwtProvider {
     private final long accessTokenExpiration;
     private final Key secretKey;
 
-    public JwtProvider(@Value("${jwt.access.header}") long accessTokenExpiration,
+    public JwtProvider(@Value("${jwt.access.expiration}") long accessTokenExpiration,
                        @Value("${jwt.secret}") String secret)
     {
         this.accessTokenExpiration = accessTokenExpiration * THOUSAND_SECONDS;
