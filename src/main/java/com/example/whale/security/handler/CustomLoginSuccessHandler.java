@@ -1,12 +1,16 @@
 package com.example.whale.security.handler;
 
 import com.example.whale.security.provider.JwtProvider;
+import com.example.whale.service.JwtService;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -17,12 +21,20 @@ import org.springframework.stereotype.Component;
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtProvider jwtProvider;
+    private final JwtService jwtService;
+
+    @Value("${jwt.access.header}")
+    private String ACCESS_TOKEN_HEADER;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        log.info("로그인 성공");
+        response.setStatus(HttpServletResponse.SC_OK);
         String accessToken = jwtProvider.generateAccessToken(authentication);
-        log.info(accessToken);
+        response.setHeader(ACCESS_TOKEN_HEADER, accessToken);
+
+        String refreshToken = jwtProvider.generateRefreshToken(authentication);
+        ResponseCookie cookie = jwtService.setRefreshTokenInCookie(refreshToken);
+        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }
