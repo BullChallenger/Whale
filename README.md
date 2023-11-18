@@ -11,6 +11,8 @@ ___
     - Refresh Token 과 AccessToken 을 통한 인증 방식을 구현한다
     - Refresh Token 의 유효 기간을 길게, AccessToken 의 유효 기간을 짧게 설정한다
     - Refresh Token 을 Redis 에 저장한다
+- [ ] ⚒️ JsonUsernamePasswordFilter 에서 Login 이 성공적으로 마치면 RefreshToken 과 AccessToken 을 발급하여 전달한다
+- [ ] ⚒️ JwtAuthenticationFilter 에서는 요청과 함께 전달된 AccessToken 과 RefreshToken 의 유효성을 검증한다
 
 ### 🔐 JWT 인증 진행 방식
 ![img.png](docs/resource/img.png)
