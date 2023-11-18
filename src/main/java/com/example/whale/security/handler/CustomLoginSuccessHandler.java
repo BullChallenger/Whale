@@ -1,7 +1,6 @@
 package com.example.whale.security.handler;
 
 import com.example.whale.security.provider.JwtProvider;
-import com.example.whale.service.JwtService;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Component;
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtProvider jwtProvider;
-    private final JwtService jwtService;
 
     @Value("${jwt.access.header}")
     private String ACCESS_TOKEN_HEADER;
@@ -34,7 +32,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         response.setHeader(ACCESS_TOKEN_HEADER, accessToken);
 
         String refreshToken = jwtProvider.generateRefreshToken(authentication);
-        ResponseCookie cookie = jwtService.setRefreshTokenInCookie(refreshToken);
+        ResponseCookie cookie = jwtProvider.setRefreshTokenInCookie(refreshToken);
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }
