@@ -4,7 +4,9 @@ ___
 ### 🛡️ Spring Security 를 활용한 JWT 인증 방식을 구현해보기
 - [x] ⚒️ User Domain 생성하기
 - [x] ⚒️ Spring Security Config 생성하기
-- [ ] ⚒️ Login 성공했을 때 토큰 발행하기
+- [x] ⚒️ Login 성공했을 때 토큰 발행하기
+    - [x] ⚒️ AccessToken 을 응답 헤더에 담아서 전달하기
+    - [x] ⚒️ RefreshToken 을 쿠키에 담아서 전달하기 
 - [ ] ⚒️ Jwt Filter 생성하기
     - Refresh Token 과 AccessToken 을 통한 인증 방식을 구현한다
     - Refresh Token 의 유효 기간을 길게, AccessToken 의 유효 기간을 짧게 설정한다
