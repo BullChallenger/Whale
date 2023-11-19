@@ -1,7 +1,13 @@
 package com.example.whale.security.handler;
 
+import com.example.whale.domain.RefreshToken;
+import com.example.whale.domain.UserEntity;
+import com.example.whale.repository.RefreshTokenRepository;
+import com.example.whale.repository.UserRepository;
 import com.example.whale.security.provider.JwtProvider;
 import java.io.IOException;
+import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +26,8 @@ import org.springframework.stereotype.Component;
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtProvider jwtProvider;
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.access.header}")
     private String ACCESS_TOKEN_HEADER;
@@ -31,7 +39,12 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtProvider.generateAccessToken(authentication);
         response.setHeader(ACCESS_TOKEN_HEADER, accessToken);
 
+        UserEntity userEntity = userRepository.findByEmail(authentication.getName()).orElseThrow(
+                () -> new EntityNotFoundException("해당 유저가 존재하지 않습니다.")
+        );
+
         String refreshToken = jwtProvider.generateRefreshToken(authentication);
+        refreshTokenRepository.save(new RefreshToken(refreshToken, userEntity.getId()));
         ResponseCookie cookie = jwtProvider.setRefreshTokenInCookie(refreshToken);
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
