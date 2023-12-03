@@ -18,7 +18,7 @@ import org.springframework.util.StreamUtils;
 
 public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    private static final String DEFAULT_LOGIN_REQUEST_URI = "/api/users/login";
+    private static final String DEFAULT_LOGIN_REQUEST_URI = "/api/login";
     private static final String CONTENT_TYPE = "application/json";
 
     private final ObjectMapper objectMapper;
