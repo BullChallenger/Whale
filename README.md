@@ -7,12 +7,12 @@ ___
 - [x] ⚒️ Login 성공했을 때 토큰 발행하기
     - [x] ⚒️ AccessToken 을 응답 헤더에 담아서 전달하기
     - [x] ⚒️ RefreshToken 을 쿠키에 담아서 전달하기 
-- [ ] ⚒️ Jwt Filter 생성하기
+- [x] ⚒️ Jwt Filter 생성하기
     - Refresh Token 과 AccessToken 을 통한 인증 방식을 구현한다
     - Refresh Token 의 유효 기간을 길게, AccessToken 의 유효 기간을 짧게 설정한다
     - Refresh Token 을 Redis 에 저장한다
-- [ ] ⚒️ JsonUsernamePasswordFilter 에서 Login 이 성공적으로 마치면 RefreshToken 과 AccessToken 을 발급하여 전달한다
-- [ ] ⚒️ JwtAuthenticationFilter 에서는 요청과 함께 전달된 AccessToken 과 RefreshToken 의 유효성을 검증한다
+- [x] ⚒️ JsonUsernamePasswordFilter 에서 Login 이 성공적으로 마치면 RefreshToken 과 AccessToken 을 발급하여 전달한다
+- [x] ⚒️ JwtAuthenticationFilter 에서는 요청과 함께 전달된 AccessToken 과 RefreshToken 의 유효성을 검증한다
 
 ### 🔐 JWT 인증 진행 방식
 ![img.png](docs/resource/img.png)
