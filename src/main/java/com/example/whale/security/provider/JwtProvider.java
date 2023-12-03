@@ -56,23 +56,33 @@ public class JwtProvider {
     }
 
     public String generateAccessToken(Authentication authentication) {
+        long now = new Date().getTime();
+
         return Jwts.builder()
                 .signWith(secretKey, SIGNATURE_ALGORITHM)
                 .setHeader(setTokenHeader())
-                .setClaims(setAccessTokenClaims(authentication))
+                .setSubject(authentication.getName())
+                .setIssuer(ISSUER)
+                .setIssuedAt(new Date())
+                .setExpiration(calculateAccessTokenExpiration(now))
+                .setAudience(authentication.getName())
+                .claim(AUTHORITY_KEY, getAuthorities(authentication))
                 .compact();
     }
 
-    private Claims setAccessTokenClaims(Authentication authentication) {
+    public String generateAccessToken(String email, String authorities) {
         long now = new Date().getTime();
 
-        return  (Claims) Jwts.claims()
-                                .setSubject(authentication.getName())
-                                .setIssuer(ISSUER)
-                                .setIssuedAt(new Date())
-                                .setExpiration(calculateAccessTokenExpiration(now))
-                                .setAudience(authentication.getName())
-                                .put(AUTHORITY_KEY, getAuthorities(authentication));
+        return Jwts.builder()
+                .signWith(secretKey, SIGNATURE_ALGORITHM)
+                .setHeader(setTokenHeader())
+                .setSubject(email)
+                .setIssuer(ISSUER)
+                .setIssuedAt(new Date())
+                .setExpiration(calculateAccessTokenExpiration(now))
+                .setAudience(email)
+                .claim(AUTHORITY_KEY, authorities)
+                .compact();
     }
 
     private String getAuthorities(Authentication authentication) {
@@ -88,23 +98,17 @@ public class JwtProvider {
     }
 
     public String generateRefreshToken(Authentication authentication) {
+        long now = new Date().getTime();
 
         return Jwts.builder()
                 .signWith(secretKey, SIGNATURE_ALGORITHM)
                 .setHeader(setTokenHeader())
-                .setClaims(setRefreshTokenClaims(authentication))
-                .compact();
-    }
-
-    private Claims setRefreshTokenClaims(Authentication authentication) {
-        long now = new Date().getTime();
-
-        return (Claims) Jwts.claims()
                 .setSubject(authentication.getName())
                 .setIssuer(ISSUER)
                 .setIssuedAt(new Date())
                 .setExpiration(calculateRefreshTokenExpiration(now))
-                .put(AUTHORITY_KEY, getAuthorities(authentication));
+                .claim(AUTHORITY_KEY, getAuthorities(authentication))
+                .compact();
     }
 
     private Date calculateRefreshTokenExpiration(long now) {
@@ -157,6 +161,10 @@ public class JwtProvider {
 
     public Optional<String> extractEmailInSubject(String token) {
         return extractClaim(token, Claims.SUBJECT, String.class);
+    }
+
+    public Optional<String> extractAuthoritiesInClaim(String token) {
+        return extractClaim(token, AUTHORITY_KEY, String.class);
     }
 
     private Claims extractClaims(String token) {
