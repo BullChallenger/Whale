@@ -22,13 +22,11 @@ public class JsonUsernamePasswordAuthenticationFilter extends AbstractAuthentica
     private static final String CONTENT_TYPE = "application/json";
 
     private final ObjectMapper objectMapper;
-    private final PasswordEncoder passwordEncoder;
 
-    public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper, PasswordEncoder passwordEncoder,
+    public JsonUsernamePasswordAuthenticationFilter(ObjectMapper objectMapper,
                                                     AuthenticationSuccessHandler authenticationSuccessHandler) {
         super(DEFAULT_LOGIN_REQUEST_URI);
         this.objectMapper = objectMapper;
-        this.passwordEncoder = passwordEncoder;
         setAuthenticationSuccessHandler(authenticationSuccessHandler);
     }
 
