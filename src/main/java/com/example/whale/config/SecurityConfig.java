@@ -59,7 +59,7 @@ public class SecurityConfig {
     @Bean
     public JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordAuthenticationFilter() {
         JsonUsernamePasswordAuthenticationFilter jsonUsernamePasswordAuthenticationFilter =
-                new JsonUsernamePasswordAuthenticationFilter(objectMapper, passwordEncoder, customLoginSuccessHandler);
+                new JsonUsernamePasswordAuthenticationFilter(objectMapper, customLoginSuccessHandler);
         jsonUsernamePasswordAuthenticationFilter.setAuthenticationManager(authenticationManager());
 
         return jsonUsernamePasswordAuthenticationFilter;
