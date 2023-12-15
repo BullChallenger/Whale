@@ -3,22 +3,20 @@ package com.example.whale.security.filter;
 import com.example.whale.domain.RefreshToken;
 import com.example.whale.repository.RefreshTokenRepository;
 import com.example.whale.security.provider.JwtProvider;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -59,8 +57,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (isSameRefreshToken(refreshToken, refreshTokenInRequest)) {
                     if (jwtProvider.isTokenValid(refreshToken) == VALID) {
                         // TODO: AccessToken 재발급
-                        String email = jwtProvider.extractEmailInSubject(refreshToken).get();
-                        String authorities = jwtProvider.extractAuthoritiesInClaim(refreshToken).get();
+                        String email = jwtProvider.extractEmailInSubject(refreshToken).orElseThrow(
+                                () -> new JwtException("잘못된 Jwt 형식 입니다.")
+                        );
+                        String authorities = jwtProvider.extractAuthoritiesInClaim(refreshToken).orElseThrow(
+                                () -> new JwtException("잘못된 Jwt 형식 입니다.")
+                        );
                         String accessToken = jwtProvider.generateAccessToken(email, authorities);
 
                         response.setHeader(ACCESS_TOKEN_HEADER, accessToken);
