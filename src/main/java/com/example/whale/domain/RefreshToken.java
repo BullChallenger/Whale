@@ -1,5 +1,7 @@
 package com.example.whale.domain;
 
+import org.springframework.data.redis.core.TimeToLive;
+
 import javax.persistence.Id;
 
 public class RefreshToken {
@@ -7,10 +9,12 @@ public class RefreshToken {
     @Id
     private String refreshToken;
     private Long userId;
+    private long ttl;
 
-    public RefreshToken(String refreshToken, Long userId) {
+    public RefreshToken(String refreshToken, String userId, long ttl) {
         this.refreshToken = refreshToken;
-        this.userId = userId;
+        this.userId = Long.valueOf(userId);
+        this.ttl = ttl;
     }
 
     public String getRefreshToken() {
