@@ -22,3 +22,10 @@ ___
 - 🐬 case1 : AccessToken 은 만료됐지만, RefreshToken은 유효한 경우 →  RefreshToken 을 검증하여 AccessToken 재발급
 - 🐬 case2 : AccessToken 은 유효하지만, RefreshToken은 만료된 경우 →  AccessToken 을 검증하여 RefreshToken 재발급
 - 🐬 case3 : AccessToken 과 RefreshToken 모두가 만료된 경우 → 에러 발생 (재 로그인하여 둘다 새로 발급)
+
+
+---
+
+### ERD Table
+
+![image](https://github.com/BullChallenger/Whale/assets/87288460/4b44abc0-02cd-4331-8ce8-9df9219498d9)
