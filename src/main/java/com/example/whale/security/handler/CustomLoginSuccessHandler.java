@@ -1,19 +1,11 @@
 package com.example.whale.security.handler;
 
 import com.example.whale.domain.RefreshToken;
-import com.example.whale.domain.UserEntity;
-import com.example.whale.dto.LoginDTO.LoginResponseDTO;
 import com.example.whale.dto.ResponseDTO;
+import com.example.whale.dto.user.AuthenticationUser;
+import com.example.whale.dto.user.LoginDTO.LoginResponseDTO;
 import com.example.whale.repository.RefreshTokenRepository;
-import com.example.whale.repository.UserRepository;
 import com.example.whale.security.provider.JwtProvider;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import javax.persistence.EntityNotFoundException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +14,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Component
@@ -32,11 +31,13 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final ObjectMapper objectMapper;
     private final JwtProvider jwtProvider;
-    private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.access.header}")
     private String ACCESS_TOKEN_HEADER;
+
+    @Value("${jwt.refresh.expiration}")
+    private long refreshTokenExpiration;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -45,16 +46,16 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtProvider.generateAccessToken(authentication);
         response.setHeader(ACCESS_TOKEN_HEADER, accessToken);
 
-        UserEntity userEntity = userRepository.findByEmail(authentication.getName()).orElseThrow(
-                () -> new EntityNotFoundException("해당 유저가 존재하지 않습니다.")
-        );
+        AuthenticationUser authUser = (AuthenticationUser) authentication.getPrincipal();
 
         String refreshToken = jwtProvider.generateRefreshToken(authentication);
-        refreshTokenRepository.save(new RefreshToken(refreshToken, userEntity.getId()));
+        refreshTokenRepository.save(new RefreshToken(refreshToken, String.valueOf(authUser.getId()), refreshTokenExpiration));
         ResponseCookie cookie = jwtProvider.setRefreshTokenInCookie(refreshToken);
         response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        String loginSuccessUserInfo = objectMapper.writeValueAsString(ResponseDTO.ok(LoginResponseDTO.from(userEntity)));
+        String loginSuccessUserInfo = objectMapper.writeValueAsString(ResponseDTO.ok(LoginResponseDTO.from(authUser)));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
