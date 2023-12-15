@@ -1,4 +1,4 @@
-package com.example.whale.dto;
+package com.example.whale.dto.user;
 
 import lombok.Getter;
 
@@ -11,4 +11,5 @@ public class SignUpDTO {
         private String nickname;
         private String password;
     }
+
 }

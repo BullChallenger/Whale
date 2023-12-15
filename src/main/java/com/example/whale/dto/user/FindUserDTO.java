@@ -1,4 +1,4 @@
-package com.example.whale.dto;
+package com.example.whale.dto.user;
 
 import com.example.whale.domain.UserEntity;
 import lombok.Builder;
@@ -8,9 +8,9 @@ public class FindUserDTO {
 
     @Getter
     public static class FindUserResponseDTO {
-        private String email;
-        private String username;
-        private String nickname;
+        private final String email;
+        private final String username;
+        private final String nickname;
 
         @Builder
         public FindUserResponseDTO(String email, String username, String nickname) {

@@ -1,6 +1,5 @@
-package com.example.whale.dto;
+package com.example.whale.dto.user;
 
-import com.example.whale.domain.UserEntity;
 import lombok.Getter;
 
 public class LoginDTO {
@@ -13,10 +12,10 @@ public class LoginDTO {
 
     @Getter
     public static class LoginResponseDTO {
-        private Long id;
-        private String email;
-        private String username;
-        private String nickname;
+        private final Long id;
+        private final String email;
+        private final String username;
+        private final String nickname;
 
         public LoginResponseDTO(Long id, String email, String username, String nickname) {
             this.id = id;
@@ -25,12 +24,12 @@ public class LoginDTO {
             this.nickname = nickname;
         }
 
-        public static LoginResponseDTO from(UserEntity userEntity) {
+        public static LoginResponseDTO from(AuthenticationUser authUser) {
             return new LoginResponseDTO(
-                    userEntity.getId(),
-                    userEntity.getEmail(),
-                    userEntity.getUsername(),
-                    userEntity.getNickname()
+                    authUser.getId(),
+                    authUser.getEmail(),
+                    authUser.getUsername(),
+                    authUser.getNickname()
             );
         }
     }
