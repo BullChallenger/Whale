@@ -1,17 +1,22 @@
-package com.example.whale.dto;
+package com.example.whale.dto.user;
 
-import java.util.Collection;
-import java.util.Set;
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.Set;
+
 public class AuthenticationUser implements UserDetails  {
 
+    @Getter
     private final Long id;
 
+    @Getter
     private final String email;
 
+    @Getter
     private final String nickname;
 
     private final String username;
@@ -47,33 +52,33 @@ public class AuthenticationUser implements UserDetails  {
     public static AuthenticationUser of(Long id, String email, String nickname, String username, String password,
                                         Set<GrantedAuthority> authorities) {
         return AuthenticationUser.builder()
-                .id(id)
-                .email(email)
-                .nickname(nickname)
-                .username(username)
-                .password(password)
-                .authorities(authorities)
-                .accountNonExpired(true)
-                .accountNonLocked(true)
-                .credentialsNonExpired(true)
-                .enabled(true)
-                .build();
+                                    .id(id)
+                                    .email(email)
+                                    .nickname(nickname)
+                                    .username(username)
+                                    .password(password)
+                                    .authorities(authorities)
+                                    .accountNonExpired(true)
+                                    .accountNonLocked(true)
+                                    .credentialsNonExpired(true)
+                                    .enabled(true)
+                                    .build();
     }
 
     public static AuthenticationUser of(Long id, String email, String nickname, String username, String password, Set<GrantedAuthority> authorities,
                                         boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
         return AuthenticationUser.builder()
-                .id(id)
-                .email(email)
-                .nickname(nickname)
-                .username(username)
-                .password(password)
-                .authorities(authorities)
-                .accountNonExpired(accountNonExpired)
-                .accountNonLocked(accountNonLocked)
-                .credentialsNonExpired(credentialsNonExpired)
-                .enabled(enabled)
-                .build();
+                                    .id(id)
+                                    .email(email)
+                                    .nickname(nickname)
+                                    .username(username)
+                                    .password(password)
+                                    .authorities(authorities)
+                                    .accountNonExpired(accountNonExpired)
+                                    .accountNonLocked(accountNonLocked)
+                                    .credentialsNonExpired(credentialsNonExpired)
+                                    .enabled(enabled)
+                                    .build();
     }
 
     @Override
@@ -88,7 +93,7 @@ public class AuthenticationUser implements UserDetails  {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.username;
     }
 
     @Override
