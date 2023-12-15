@@ -19,23 +19,23 @@ public class RefreshTokenRepository {
     @Value("${jwt.refresh.expiration}")
     private long refreshTokenExpiration;
 
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public void save(RefreshToken refreshToken) {
-        ValueOperations<String, Long> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(refreshToken.getRefreshToken(), refreshToken.getUserId());
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(refreshToken.getRefreshToken(), String.valueOf(refreshToken.getUserId()));
         redisTemplate.expire(refreshToken.getRefreshToken(), refreshTokenExpiration, TimeUnit.SECONDS);
     }
 
     public Optional<RefreshToken> findById(String refreshToken) {
-        ValueOperations<String, Long> valueOperations = redisTemplate.opsForValue();
-        Long userId = valueOperations.get(refreshToken);
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String userId = valueOperations.get(refreshToken);
 
         if (Objects.isNull(refreshToken)) {
             return Optional.empty();
         }
 
-        return Optional.of(new RefreshToken(refreshToken, userId));
+        return Optional.of(new RefreshToken(refreshToken, userId, refreshTokenExpiration));
     }
 
 }
