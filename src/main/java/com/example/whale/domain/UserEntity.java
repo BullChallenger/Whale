@@ -1,21 +1,17 @@
 package com.example.whale.domain;
 
 import com.example.whale.constant.Role;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,7 +19,8 @@ import org.hibernate.annotations.Where;
 @DynamicUpdate
 @Where(clause = "IS_DELETED = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserEntity {
+@Table(indexes = @Index(name = "idx_user_id", columnList = "user_id"))
+public class UserEntity extends BaseEntity {
 
     @Id
     @Column(name = "USER_ID")
@@ -38,12 +35,11 @@ public class UserEntity {
 
     private String password;
 
+    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY)
+    private List<ArticleEntity> articles = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @ColumnDefault("false")
-    @Column(name = "IS_DELETED", columnDefinition = "TINYINT(1) default false")
-    private Boolean isDeleted;
 
     @Builder
     public UserEntity(String email, String username, String nickname, String password, Role role) {
@@ -64,8 +60,24 @@ public class UserEntity {
                 .build();
     }
 
-    public void updateIsDeleted(Boolean deleted) {
-        isDeleted = deleted;
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updateUsername(String username) {
+        this.username = username;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void writeArticle(ArticleEntity article) {
+        this.articles.add(article);
     }
 
 }

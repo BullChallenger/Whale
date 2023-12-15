@@ -1,16 +1,13 @@
 package com.example.whale.controller;
 
-import com.example.whale.dto.FindUserDTO.FindUserResponseDTO;
+import com.example.whale.dto.user.FindUserDTO.FindUserResponseDTO;
 import com.example.whale.dto.ResponseDTO;
-import com.example.whale.dto.SignUpDTO.SignUpRequestDTO;
+import com.example.whale.dto.user.SignUpDTO.SignUpRequestDTO;
+import com.example.whale.dto.user.UpdateUserDTO.UpdateUserRequestDTO;
+import com.example.whale.dto.user.UpdateUserDTO.UpdateUserResponseDTO;
 import com.example.whale.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +25,17 @@ public class UserController extends  BaseController {
     @GetMapping(value = "/find/{userId}")
     public ResponseDTO<FindUserResponseDTO> findUserById(@PathVariable("userId") Long userId) {
         return ResponseDTO.ok(userService.findUserById(userId));
+    }
+
+    @PatchMapping(value = "/update")
+    public ResponseDTO<UpdateUserResponseDTO> updateUserInfo(@RequestBody UpdateUserRequestDTO dto) {
+        return ResponseDTO.ok(userService.updateUserInfo(dto));
+    }
+
+    @DeleteMapping(value = "/delete/{userId}")
+    public ResponseDTO<Void> deleteUserById(@PathVariable("userId") Long userId) {
+        userService.deleteUserById(userId);
+        return ResponseDTO.ok();
     }
 
 }
