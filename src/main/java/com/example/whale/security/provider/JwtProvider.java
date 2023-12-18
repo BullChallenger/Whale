@@ -1,21 +1,10 @@
 package com.example.whale.security.provider;
 
+import com.example.whale.dto.user.AuthenticationUser;
 import com.example.whale.util.CookieUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -23,12 +12,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.security.Key;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 public class JwtProvider {
 
     private static final String ISSUER = "whale_project";
     private static final String AUTHORITY_KEY = "authority";
+    private static final String USER_ID = "USER_ID";
     private static final String COMMA = ",";
     private static final int THOUSAND_SECONDS = 1000;
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
@@ -57,20 +55,22 @@ public class JwtProvider {
 
     public String generateAccessToken(Authentication authentication) {
         long now = new Date().getTime();
+        AuthenticationUser authUser = (AuthenticationUser) authentication.getPrincipal();
 
         return Jwts.builder()
                 .signWith(secretKey, SIGNATURE_ALGORITHM)
                 .setHeader(setTokenHeader())
-                .setSubject(authentication.getName())
+                .setSubject(authUser.getEmail())
                 .setIssuer(ISSUER)
                 .setIssuedAt(new Date())
                 .setExpiration(calculateAccessTokenExpiration(now))
-                .setAudience(authentication.getName())
+                .setAudience(authUser.getUsername())
                 .claim(AUTHORITY_KEY, getAuthorities(authentication))
+                .claim(USER_ID, authUser.getId())
                 .compact();
     }
 
-    public String generateAccessToken(String email, String authorities) {
+    public String generateAccessToken(String email, String authorities, Long userId) {
         long now = new Date().getTime();
 
         return Jwts.builder()
@@ -82,32 +82,50 @@ public class JwtProvider {
                 .setExpiration(calculateAccessTokenExpiration(now))
                 .setAudience(email)
                 .claim(AUTHORITY_KEY, authorities)
+                .claim(USER_ID, userId)
                 .compact();
     }
 
     private String getAuthorities(Authentication authentication) {
-        String authorities = authentication.getAuthorities()
+        return authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(COMMA));
-        return authorities;
     }
 
     private Date calculateAccessTokenExpiration(long now) {
+        System.out.println(new Date(now + accessTokenExpiration));
         return new Date(now + accessTokenExpiration);
     }
 
     public String generateRefreshToken(Authentication authentication) {
         long now = new Date().getTime();
+        AuthenticationUser authUser = (AuthenticationUser) authentication.getPrincipal();
 
         return Jwts.builder()
                 .signWith(secretKey, SIGNATURE_ALGORITHM)
                 .setHeader(setTokenHeader())
-                .setSubject(authentication.getName())
+                .setSubject(authUser.getEmail())
                 .setIssuer(ISSUER)
                 .setIssuedAt(new Date())
                 .setExpiration(calculateRefreshTokenExpiration(now))
                 .claim(AUTHORITY_KEY, getAuthorities(authentication))
+                .claim(USER_ID, authUser.getId())
+                .compact();
+    }
+
+    public String generateRefreshToken(String email, String authorities, Long userId) {
+        long now = new Date().getTime();
+
+        return Jwts.builder()
+                .signWith(secretKey, SIGNATURE_ALGORITHM)
+                .setHeader(setTokenHeader())
+                .setSubject(email)
+                .setIssuer(ISSUER)
+                .setIssuedAt(new Date())
+                .setExpiration(calculateRefreshTokenExpiration(now))
+                .claim(AUTHORITY_KEY, authorities)
+                .claim(USER_ID, userId)
                 .compact();
     }
 
@@ -116,15 +134,14 @@ public class JwtProvider {
     }
 
     public ResponseCookie setRefreshTokenInCookie(String refreshToken) {
-        ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_HEADER, refreshToken)
+
+        return ResponseCookie.from(REFRESH_TOKEN_HEADER, refreshToken)
                 .httpOnly(false)
                 .secure(false)
                 .sameSite("None")
                 .maxAge(refreshTokenExpiration * THOUSAND_SECONDS)
                 .path("/")
                 .build();
-
-        return cookie;
     }
 
     private Map<String, Object> setTokenHeader() {
@@ -165,6 +182,10 @@ public class JwtProvider {
 
     public Optional<String> extractAuthoritiesInClaim(String token) {
         return extractClaim(token, AUTHORITY_KEY, String.class);
+    }
+
+    public Optional<Long> extractUserIdInClaim(String token) {
+        return extractClaim(token, USER_ID, Long.class);
     }
 
     private Claims extractClaims(String token) {

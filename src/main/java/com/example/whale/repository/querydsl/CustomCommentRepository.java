@@ -51,6 +51,11 @@ public class CustomCommentRepository {
                      .set(commentEntity.isDeleted, true)
                      .where(commentEntity.id.eq(commentId))
                      .execute();
+
+        queryFactory.update(commentEntity)
+                    .set(commentEntity.isDeleted, true)
+                    .where(commentEntity.parentComment.id.eq(commentId))
+                    .execute();
     }
 
 }

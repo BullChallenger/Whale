@@ -41,10 +41,12 @@ public class CommentService {
 
         if (parentComment.isPresent()) {
             CommentEntity comment = CommentEntity.of(writer, dto.getContent(), parentComment.get(), article);
+            article.addCommentInArticle(comment);
             return CreateCommentResponseDTO.from(commentRepository.save(comment));
         }
 
         CommentEntity rootComment = CommentEntity.of(writer, dto.getContent(), null, article);
+        article.addCommentInArticle(rootComment);
         return CreateCommentResponseDTO.from(commentRepository.save(rootComment));
     }
 
