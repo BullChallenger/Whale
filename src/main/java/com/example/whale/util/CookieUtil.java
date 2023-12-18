@@ -1,12 +1,13 @@
 package com.example.whale.util;
 
-import java.util.Base64;
-import java.util.Optional;
+import org.springframework.stereotype.Component;
+import org.springframework.util.SerializationUtils;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.stereotype.Component;
-import org.springframework.util.SerializationUtils;
+import java.util.Base64;
+import java.util.Optional;
 
 @Component
 public class CookieUtil {
