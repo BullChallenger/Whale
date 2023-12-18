@@ -9,6 +9,7 @@ public class RefreshToken {
     @Id
     private String refreshToken;
     private Long userId;
+    @TimeToLive
     private long ttl;
 
     public RefreshToken(String refreshToken, String userId, long ttl) {
