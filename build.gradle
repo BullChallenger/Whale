@@ -49,6 +49,13 @@ dependencies {
     // QueryDSL
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    // File IO
+    implementation 'commons-io:commons-io:2.6'
+
+    // Swagger 3.0: springfox
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
 }
 
 def querydslDir = "$buildDir/generated/querydsl"

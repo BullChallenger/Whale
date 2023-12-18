@@ -36,7 +36,10 @@ public class ArticleEntity extends BaseEntity {
     @Column(name = "ARTICLE_CONTENT")
     private String content;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    private List<AttachmentEntity> attachments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     private List<CommentEntity> comments = new ArrayList<>();
 
     @Builder
@@ -64,6 +67,14 @@ public class ArticleEntity extends BaseEntity {
 
     public void addCommentInArticle(CommentEntity commentEntity) {
         this.comments.add(commentEntity);
+    }
+
+    public void setAttachmentsInArticle(List<AttachmentEntity> attachments) {
+        this.attachments = attachments;
+    }
+
+    public void addAttachmentInArticle(AttachmentEntity attachmentEntity) {
+        this.attachments.add(attachmentEntity);
     }
     
 }

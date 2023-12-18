@@ -1,6 +1,7 @@
 package com.example.whale.dto.article;
 
 import com.example.whale.domain.ArticleEntity;
+import com.example.whale.dto.attachment.GetAttachmentResponseDTO;
 import com.example.whale.dto.comment.GetCommentResponseDTO;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public class GetArticleResponseDTO {
     private final String title;
     private final String content;
     private List<GetCommentResponseDTO> comments;
+    private List<GetAttachmentResponseDTO> attachments;
 
     @Builder
     @QueryProjection
@@ -37,6 +39,10 @@ public class GetArticleResponseDTO {
 
     public void setCommentsInArticle(List<GetCommentResponseDTO> commentsInArticle) {
         this.comments = commentsInArticle;
+    }
+
+    public void setAttachmentInArticle(List<GetAttachmentResponseDTO> attachments) {
+        this.attachments = attachments;
     }
 
 }

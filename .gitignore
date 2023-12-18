@@ -172,3 +172,4 @@ gradle-app.setting
 *.yml
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,java,intellij+all,gradle
+images
