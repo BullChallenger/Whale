@@ -7,7 +7,10 @@ import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -19,19 +22,23 @@ import java.util.Arrays;
 import java.util.Optional;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Value("${jwt.access.header}")
     private String ACCESS_TOKEN_HEADER;
+    @Value("${jwt.refresh.expiration}")
+    private Long REFRESH_TOKEN_EXPIRATION;
     private static final int VALID = 1;
     private static final int EXPIRED = 0;
-    private static final int INVALID = 0;
-    private static final String[] NO_CHECK_URI_LIST = {"/", "/api/login", "/api/users/signUp"};
+    private static final int INVALID = -1;
+    private static final String[] NO_CHECK_URI_LIST = {
+            "/", "/api/login", "/api/users/signUp", "/error"
+    };
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -48,26 +55,57 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .orElseThrow(() -> new JwtException("AccessToken 이 존재하지 않습니다."));
         String refreshTokenInRequest = jwtProvider.extractRefreshToken(request)
                 .orElseThrow(() -> new JwtException("RefreshToken 이 존재하지 않습니다."));
-        Optional<RefreshToken> refreshTokenInRedis = refreshTokenRepository.findById(refreshTokenInRequest);
+
+        Long userId;
+        String email;
+        String authorities;
+
+        Optional<RefreshToken> refreshTokenInRedis = Optional.empty();
+
+        try {
+            refreshTokenInRedis = refreshTokenRepository.findById(refreshTokenInRequest);
+        } catch (InvalidDataAccessApiUsageException e) {
+            if (jwtProvider.isTokenValid(accessTokenInRequest) == VALID) {
+                email = jwtProvider.extractEmailInSubject(accessTokenInRequest).orElseThrow(
+                        () -> new JwtException("잘못된 Jwt 형식 입니다.")
+                );
+                authorities = jwtProvider.extractAuthoritiesInClaim(accessTokenInRequest).orElseThrow(
+                        () -> new JwtException("잘못된 Jwt 형식 입니다.")
+                );
+                userId = jwtProvider.extractUserIdInClaim(accessTokenInRequest).orElseThrow(
+                        () -> new JwtException("잘못된 Jwt 형식 입니다.")
+                );
+
+                String reIssuedRefreshToken = jwtProvider.generateRefreshToken(email, authorities, userId);
+
+                response.setHeader(HttpHeaders.SET_COOKIE, jwtProvider.setRefreshTokenInCookie(reIssuedRefreshToken).toString());
+                refreshTokenRepository.save(new RefreshToken(reIssuedRefreshToken, String.valueOf(userId), REFRESH_TOKEN_EXPIRATION));
+            } else {
+                throw new JwtException("재로그인 필요");
+            }
+        }
 
         if (jwtProvider.isTokenValid(accessTokenInRequest) == EXPIRED) {
-            // TODO: RefreshToken 확인 후 재발급 여부 결정
+            // RefreshToken 확인 후 재발급 여부 결정
             if (refreshTokenInRedis.isPresent()) {
                 String refreshToken = refreshTokenInRedis.get().getRefreshToken();
                 if (isSameRefreshToken(refreshToken, refreshTokenInRequest)) {
                     if (jwtProvider.isTokenValid(refreshToken) == VALID) {
-                        // TODO: AccessToken 재발급
-                        String email = jwtProvider.extractEmailInSubject(refreshToken).orElseThrow(
+                        // AccessToken 재발급
+                        email = jwtProvider.extractEmailInSubject(refreshToken).orElseThrow(
                                 () -> new JwtException("잘못된 Jwt 형식 입니다.")
                         );
-                        String authorities = jwtProvider.extractAuthoritiesInClaim(refreshToken).orElseThrow(
+                        authorities = jwtProvider.extractAuthoritiesInClaim(refreshToken).orElseThrow(
                                 () -> new JwtException("잘못된 Jwt 형식 입니다.")
                         );
-                        String accessToken = jwtProvider.generateAccessToken(email, authorities);
+                        userId = jwtProvider.extractUserIdInClaim(refreshToken).orElseThrow(
+                                () -> new JwtException("잘못된 Jwt 형식 입니다.")
+                        );
 
-                        response.setHeader(ACCESS_TOKEN_HEADER, accessToken);
+                        response.setHeader(ACCESS_TOKEN_HEADER, jwtProvider.generateAccessToken(email, authorities, userId));
                     } else {
                         // TODO: 재로그인 필요
+                        throw new JwtException("재로그인 필요");
                     }
                 }
             }
