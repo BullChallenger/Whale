@@ -3,14 +3,16 @@ package com.example.whale.security.filter;
 import com.example.whale.domain.RefreshToken;
 import com.example.whale.repository.RefreshTokenRepository;
 import com.example.whale.security.provider.JwtProvider;
+import com.example.whale.service.LoginService;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
-import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -27,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+    private final LoginService loginService;
 
     @Value("${jwt.access.header}")
     private String ACCESS_TOKEN_HEADER;
@@ -36,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final int VALID = 1;
     private static final int EXPIRED = 0;
     private static final int INVALID = -1;
+    private static final String EMPTY_EMAIL = "EMPTY_EMAIL";
     private static final String[] NO_CHECK_URI_LIST = {
             "/", "/api/login", "/api/users/signUp", "/error"
     };
@@ -57,7 +60,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .orElseThrow(() -> new JwtException("RefreshToken 이 존재하지 않습니다."));
 
         Long userId;
-        String email;
+        String email = EMPTY_EMAIL;
         String authorities;
 
         Optional<RefreshToken> refreshTokenInRedis = Optional.empty();
@@ -102,7 +105,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 () -> new JwtException("잘못된 Jwt 형식 입니다.")
                         );
 
-                        response.setHeader(ACCESS_TOKEN_HEADER, jwtProvider.generateAccessToken(email, authorities, userId));
+                        accessTokenInRequest = jwtProvider.generateAccessToken(email, authorities, userId);
+                        response.setHeader(ACCESS_TOKEN_HEADER, accessTokenInRequest);
                     } else {
                         // TODO: 재로그인 필요
                         throw new JwtException("재로그인 필요");
@@ -112,6 +116,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } else if (jwtProvider.isTokenValid(accessTokenInRequest) == INVALID) {
             throw new JwtException("유효하지 않은 AccessToken 입니다.");
         }
+
+        if (email.equals(EMPTY_EMAIL)) {
+            Optional<String> boxingEmail = jwtProvider.extractEmailInSubject(accessTokenInRequest);
+            if (boxingEmail.isPresent()) {
+                email = boxingEmail.get();
+            }
+        }
+
+        UserDetails userDetails = loginService.loadUserByUsername(email);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         doFilter(request, response, filterChain);
     }

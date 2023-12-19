@@ -1,13 +1,16 @@
 package com.example.whale.controller;
 
+import com.example.whale.controller.util.AuthenticationUtil;
 import com.example.whale.dto.ResponseDTO;
 import com.example.whale.dto.comment.CreateCommentDTO.CreateCommentRequestDTO;
 import com.example.whale.dto.comment.CreateCommentDTO.CreateCommentResponseDTO;
 import com.example.whale.dto.comment.GetCommentResponseDTO;
 import com.example.whale.dto.comment.GetOneCommentDTO;
 import com.example.whale.dto.comment.UpdateCommentRequestDTO;
+import com.example.whale.dto.user.AuthenticationUser;
 import com.example.whale.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,8 +21,10 @@ public class CommentController extends BaseController {
     private final CommentService commentService;
 
     @PostMapping(value = "/save")
-    public ResponseDTO<CreateCommentResponseDTO> saveComment(@RequestBody CreateCommentRequestDTO dto) {
-        return ResponseDTO.ok(commentService.saveComment(dto));
+    public ResponseDTO<CreateCommentResponseDTO> saveComment(@RequestBody CreateCommentRequestDTO dto,
+                                                             Authentication authentication) {
+        AuthenticationUser principal = AuthenticationUtil.convertAuthentication(authentication);
+        return ResponseDTO.ok(commentService.saveComment(principal.getId(), dto));
     }
 
     @GetMapping(value = "/find/{commentId}")

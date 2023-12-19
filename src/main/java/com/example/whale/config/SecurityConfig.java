@@ -48,8 +48,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/swagger-ui/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .antMatchers("/api/login").authenticated()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
             .and()
                 .logout()
                 .logoutUrl("/logout")
@@ -81,7 +80,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository);
+        return new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository, loginService);
     }
 
     @Bean

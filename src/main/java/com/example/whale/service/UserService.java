@@ -40,8 +40,8 @@ public class UserService {
         userRepository.save(findUser);
     }
 
-    public UpdateUserResponseDTO updateUserInfo(UpdateUserRequestDTO dto) {
-        UserEntity findUser = findUserByUserId(dto.getUserId());
+    public UpdateUserResponseDTO updateUserInfo(Long userId, UpdateUserRequestDTO dto) {
+        UserEntity findUser = findUserByUserId(userId);
 
         if (dto.getEmail() != null) {
             findUser.updateEmail(dto.getEmail());

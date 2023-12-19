@@ -29,10 +29,10 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CustomCommentRepository customCommentRepository;
 
-    public CreateCommentResponseDTO saveComment(CreateCommentRequestDTO dto) {
+    public CreateCommentResponseDTO saveComment(Long writerId, CreateCommentRequestDTO dto) {
         Long parentCommentId = dto.getParentCommentId();
         Optional<CommentEntity> parentComment = Optional.empty();
-        UserEntity writer = findWriter(dto.getWriterId());
+        UserEntity writer = findWriter(writerId);
         ArticleEntity article = findArticle(dto.getArticleId());
 
         if (hasParentComment(parentCommentId)) {
