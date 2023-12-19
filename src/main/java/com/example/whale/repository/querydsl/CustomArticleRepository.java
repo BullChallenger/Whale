@@ -1,13 +1,22 @@
 package com.example.whale.repository.querydsl;
 
+import com.example.whale.dto.article.GetArticlePageResponseDTO;
 import com.example.whale.dto.article.GetArticleResponseDTO;
+import com.example.whale.dto.article.QGetArticlePageResponseDTO;
 import com.example.whale.dto.article.QGetArticleResponseDTO;
 import com.example.whale.dto.attachment.GetAttachmentResponseDTO;
 import com.example.whale.dto.attachment.QGetAttachmentResponseDTO;
 import com.example.whale.dto.comment.GetCommentResponseDTO;
 import com.example.whale.dto.comment.QGetCommentResponseDTO;
+import com.example.whale.dto.user.QWriterResponseDTO;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -82,6 +91,41 @@ public class CustomArticleRepository {
                 .set(attachmentEntity.isDeleted, true)
                 .where(attachmentEntity.article.id.eq(articleId))
                 .execute();
+    }
+
+    public Page<GetArticlePageResponseDTO> readArticlePage(Long lastArticleId, Pageable pageable) {
+        List<GetArticlePageResponseDTO> pageContent = queryFactory.select(
+                new QGetArticlePageResponseDTO(
+                        articleEntity.id,
+                        articleEntity.title,
+                        new QWriterResponseDTO(
+                            userEntity.id,
+                            userEntity.nickname
+                        ),
+                        Expressions.numberTemplate(Integer.class, "count({0})", commentEntity.id)
+                )
+        ).from(articleEntity)
+         .where(ltArticleId(lastArticleId))
+         .innerJoin(articleEntity.writer, userEntity)
+         .leftJoin(articleEntity.comments, commentEntity)
+         .groupBy(articleEntity.id)
+         .orderBy(articleEntity.id.desc())
+         .limit(pageable.getPageSize())
+         .fetch();
+
+        JPAQuery<Long> countArticleQuery = queryFactory
+                                        .select(articleEntity.count())
+                                        .from(articleEntity);
+
+        return PageableExecutionUtils.getPage(pageContent, pageable, countArticleQuery::fetchOne);
+    }
+
+    private BooleanExpression ltArticleId(Long articleId) {
+        if (articleId == null) {
+            return null;
+        }
+
+        return articleEntity.id.lt(articleId);
     }
 
 }

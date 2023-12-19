@@ -5,6 +5,7 @@ import com.example.whale.domain.AttachmentEntity;
 import com.example.whale.domain.UserEntity;
 import com.example.whale.dto.article.CreateArticleDTO.CreateArticleRequestDTO;
 import com.example.whale.dto.article.CreateArticleDTO.CreateArticleResponseDTO;
+import com.example.whale.dto.article.GetArticlePageResponseDTO;
 import com.example.whale.dto.article.GetArticleResponseDTO;
 import com.example.whale.dto.article.UpdateArticleDTO.UpdateArticleRequestDTO;
 import com.example.whale.dto.article.UpdateArticleDTO.UpdateArticleResponseDTO;
@@ -12,6 +13,8 @@ import com.example.whale.repository.ArticleRepository;
 import com.example.whale.repository.UserRepository;
 import com.example.whale.repository.querydsl.CustomArticleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,8 +33,8 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final CustomArticleRepository customArticleRepository;
 
-    public CreateArticleResponseDTO saveArticle(CreateArticleRequestDTO dto, List<MultipartFile> attachments) throws IOException {
-        UserEntity writer = userRepository.findById(dto.getUserId()).orElseThrow(
+    public CreateArticleResponseDTO saveArticle(Long userId, CreateArticleRequestDTO dto, List<MultipartFile> attachments) throws IOException {
+        UserEntity writer = userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException("User Not Found!")
         );
 
@@ -68,6 +71,19 @@ public class ArticleService {
 
     public void deleteArticleById(Long articleId) {
         customArticleRepository.deleteArticleById(articleId);
+    }
+
+    public Page<GetArticlePageResponseDTO> readArticlePage(Long lastArticleId, Pageable pageable) {
+//        Page<ArticleEntity> articleEntityPage = articleRepository.findAll(pageable);
+//        return articleEntityPage.map(articleEntity -> GetArticlePageResponseDTO.of(
+//                articleEntity.getId(),
+//                articleEntity.getTitle(),
+//                WriterResponseDTO.of(articleEntity.getWriter().getId(), articleEntity.getWriter().getNickname()),
+//                articleEntity.getComments().size()
+//                )
+//        );
+
+        return customArticleRepository.readArticlePage(lastArticleId, pageable);
     }
 
 }
