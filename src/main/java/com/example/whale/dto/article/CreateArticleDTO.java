@@ -8,7 +8,6 @@ public class CreateArticleDTO {
 
     @Getter
     public static class CreateArticleRequestDTO {
-        private Long userId;
         private String title;
         private String content;
     }

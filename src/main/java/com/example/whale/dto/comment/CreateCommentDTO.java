@@ -10,7 +10,6 @@ public class CreateCommentDTO {
 
     @Getter
     public static class CreateCommentRequestDTO {
-        private Long writerId;
         private Long parentCommentId;
         private String content;
         private Long articleId;
