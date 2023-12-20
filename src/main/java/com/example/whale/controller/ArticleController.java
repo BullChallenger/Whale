@@ -43,8 +43,9 @@ public class ArticleController extends BaseController {
     }
 
     @PatchMapping(value = "/update")
-    public ResponseDTO<UpdateArticleResponseDTO> updateArticle(@RequestBody UpdateArticleRequestDTO dto) {
-        return ResponseDTO.ok(articleService.updateArticle(dto));
+    public ResponseDTO<UpdateArticleResponseDTO> updateArticle(@RequestPart(value = "dto") UpdateArticleRequestDTO dto,
+                                                               @RequestPart(value = "attachment", required = false) List<MultipartFile> attachments) throws IOException {
+        return ResponseDTO.ok(articleService.updateArticle(dto, attachments));
     }
 
     @DeleteMapping(value = "/delete/{articleId}")

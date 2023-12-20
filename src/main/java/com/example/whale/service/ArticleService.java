@@ -12,15 +12,18 @@ import com.example.whale.dto.article.UpdateArticleDTO.UpdateArticleResponseDTO;
 import com.example.whale.repository.ArticleRepository;
 import com.example.whale.repository.UserRepository;
 import com.example.whale.repository.querydsl.CustomArticleRepository;
+import com.example.whale.repository.querydsl.CustomAttachmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +35,7 @@ public class ArticleService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CustomArticleRepository customArticleRepository;
+    private final CustomAttachmentRepository customAttachmentRepository;
 
     public CreateArticleResponseDTO saveArticle(Long userId, CreateArticleRequestDTO dto, List<MultipartFile> attachments) throws IOException {
         UserEntity writer = userRepository.findById(userId).orElseThrow(
@@ -53,7 +57,7 @@ public class ArticleService {
         return customArticleRepository.readArticleById(articleId);
     }
 
-    public UpdateArticleResponseDTO updateArticle(UpdateArticleRequestDTO dto) {
+    public UpdateArticleResponseDTO updateArticle(UpdateArticleRequestDTO dto, List<MultipartFile> attachments) throws IOException {
         ArticleEntity findArticle = articleRepository.findById(dto.getArticleId()).orElseThrow(
                 () -> new EntityNotFoundException("Article Not Found!")
         );
@@ -65,8 +69,26 @@ public class ArticleService {
             findArticle.updateContent(dto.getContent());
         }
 
-        ArticleEntity updatedArticle = articleRepository.save(findArticle);
-        return UpdateArticleResponseDTO.from(updatedArticle);
+        List<MultipartFile> attachmentsShouldAddArticle = new ArrayList<>();
+        List<AttachmentEntity> updatedAttachments;
+
+        if (CollectionUtils.isEmpty(findArticle.getAttachments())) {
+            if (!CollectionUtils.isEmpty(attachments)) {
+                attachmentsShouldAddArticle.addAll(attachments);
+            }
+        } else {
+            attachmentsShouldAddArticle.addAll(attachments);
+        }
+
+        if (!attachmentsShouldAddArticle.isEmpty()) {
+            updatedAttachments = fileHandler.parseFileInfo(findArticle, attachmentsShouldAddArticle);
+            findArticle.getAttachments().clear();
+            findArticle.getAttachments().addAll(updatedAttachments);
+        } else {
+            findArticle.getAttachments().clear();
+        }
+
+        return UpdateArticleResponseDTO.from(findArticle);
     }
 
     public void deleteArticleById(Long articleId) {

@@ -36,7 +36,7 @@ public class ArticleEntity extends BaseEntity {
     @Column(name = "ARTICLE_CONTENT")
     private String content;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, orphanRemoval = true, cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     private List<AttachmentEntity> attachments = new ArrayList<>();
 
     @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
