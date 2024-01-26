@@ -1,14 +1,21 @@
 package com.example.whale.domain;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -21,36 +28,53 @@ public class AttachmentEntity extends BaseEntity {
 
     @Id
     @Column(name = "ATTACHMENT_ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "ARTICLE_ID")
     private ArticleEntity article;
 
-    private String fileNameInStorage;
-
     private String fileOriginName;
 
-    private String fileUrl;
+    private String filePath;
+
+    private String fileExtension;
+
+    private String contentType;
 
     private Long fileSize;
 
     @Builder
-    public AttachmentEntity(ArticleEntity article, String fileNameInStore, String fileOriginName, String fileUrl, Long fileSize) {
+    public AttachmentEntity(String id,
+        ArticleEntity article,
+        String fileOriginName,
+        String filePath,
+        String fileExtension,
+        String contentType,
+        Long fileSize
+    ) {
         this.article = article;
-        this.fileNameInStorage = fileNameInStore;
         this.fileOriginName = fileOriginName;
-        this.fileUrl = fileUrl;
+        this.filePath = filePath;
+        this.fileExtension = fileExtension;
+        this.contentType = contentType;
         this.fileSize = fileSize;
     }
 
-    public static AttachmentEntity of(ArticleEntity article, String fileNameInStore, String fileOriginName, String fileUrl, Long fileSize) {
+    public static AttachmentEntity of(String id,
+        ArticleEntity article,
+        String fileOriginName,
+        String filePath,
+        String fileExtension,
+        String contentType,
+        Long fileSize) {
         return AttachmentEntity.builder()
+                                .id(id)
                                 .article(article)
-                                .fileNameInStore(fileNameInStore)
                                 .fileOriginName(fileOriginName)
-                                .fileUrl(fileUrl)
+                                .filePath(filePath)
+                                .fileExtension(fileExtension)
+                                .contentType(contentType)
                                 .fileSize(fileSize)
                                 .build();
     }

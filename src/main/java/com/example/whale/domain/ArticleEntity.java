@@ -1,16 +1,28 @@
 package com.example.whale.domain;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -35,9 +47,6 @@ public class ArticleEntity extends BaseEntity {
     @Lob
     @Column(name = "ARTICLE_CONTENT")
     private String content;
-
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, orphanRemoval = true, cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-    private List<AttachmentEntity> attachments = new ArrayList<>();
 
     @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     private List<CommentEntity> comments = new ArrayList<>();
@@ -69,12 +78,4 @@ public class ArticleEntity extends BaseEntity {
         this.comments.add(commentEntity);
     }
 
-    public void setAttachmentsInArticle(List<AttachmentEntity> attachments) {
-        this.attachments = attachments;
-    }
-
-    public void addAttachmentInArticle(AttachmentEntity attachmentEntity) {
-        this.attachments.add(attachmentEntity);
-    }
-    
 }

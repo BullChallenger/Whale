@@ -35,9 +35,8 @@ public class ArticleService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CustomArticleRepository customArticleRepository;
-    private final CustomAttachmentRepository customAttachmentRepository;
 
-    public CreateArticleResponseDTO saveArticle(Long userId, CreateArticleRequestDTO dto, List<MultipartFile> attachments) throws IOException {
+    public ArticleEntity saveArticle(Long userId, CreateArticleRequestDTO dto, List<MultipartFile> attachments) throws IOException {
         UserEntity writer = userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException("User Not Found!")
         );
@@ -48,9 +47,7 @@ public class ArticleService {
                 dto.getContent()
         );
 
-        List<AttachmentEntity> attachmentsInArticle = fileHandler.parseFileInfo(article, attachments);
-        article.setAttachmentsInArticle(attachmentsInArticle);
-        return CreateArticleResponseDTO.from(articleRepository.save(article));
+        return articleRepository.save(article);
     }
 
     public GetArticleResponseDTO findArticleById(Long articleId) {
