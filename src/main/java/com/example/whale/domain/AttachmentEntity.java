@@ -45,7 +45,8 @@ public class AttachmentEntity extends BaseEntity {
     private Long fileSize;
 
     @Builder
-    public AttachmentEntity(String id,
+    public AttachmentEntity(
+        String id,
         ArticleEntity article,
         String fileOriginName,
         String filePath,
@@ -53,6 +54,7 @@ public class AttachmentEntity extends BaseEntity {
         String contentType,
         Long fileSize
     ) {
+        this.id = id;
         this.article = article;
         this.fileOriginName = fileOriginName;
         this.filePath = filePath;
@@ -61,7 +63,8 @@ public class AttachmentEntity extends BaseEntity {
         this.fileSize = fileSize;
     }
 
-    public static AttachmentEntity of(String id,
+    public static AttachmentEntity of(
+        String id,
         ArticleEntity article,
         String fileOriginName,
         String filePath,

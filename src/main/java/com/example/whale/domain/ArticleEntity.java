@@ -48,8 +48,14 @@ public class ArticleEntity extends BaseEntity {
     @Column(name = "ARTICLE_CONTENT")
     private String content;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
+    private List<AttachmentEntity> attachments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
     private List<CommentEntity> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
+    private List<HeartEntity> hearts = new ArrayList<>();
 
     @Builder
     public ArticleEntity(UserEntity writer, String title, String content) {

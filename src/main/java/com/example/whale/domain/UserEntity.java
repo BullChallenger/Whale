@@ -38,6 +38,9 @@ public class UserEntity extends BaseEntity {
     @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY)
     private List<ArticleEntity> articles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<HeartEntity> hearts = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

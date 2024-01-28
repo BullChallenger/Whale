@@ -1,6 +1,6 @@
 package com.example.whale.controller;
 
-import com.example.whale.controller.util.AuthenticationUtil;
+import com.example.whale.util.AuthenticationUtil;
 import com.example.whale.dto.ResponseDTO;
 import com.example.whale.dto.user.AuthenticationUser;
 import com.example.whale.dto.user.FindUserDTO.FindUserResponseDTO;

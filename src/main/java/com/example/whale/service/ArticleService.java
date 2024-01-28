@@ -4,7 +4,6 @@ import com.example.whale.domain.ArticleEntity;
 import com.example.whale.domain.AttachmentEntity;
 import com.example.whale.domain.UserEntity;
 import com.example.whale.dto.article.CreateArticleDTO.CreateArticleRequestDTO;
-import com.example.whale.dto.article.CreateArticleDTO.CreateArticleResponseDTO;
 import com.example.whale.dto.article.GetArticlePageResponseDTO;
 import com.example.whale.dto.article.GetArticleResponseDTO;
 import com.example.whale.dto.article.UpdateArticleDTO.UpdateArticleRequestDTO;
@@ -12,7 +11,6 @@ import com.example.whale.dto.article.UpdateArticleDTO.UpdateArticleResponseDTO;
 import com.example.whale.repository.ArticleRepository;
 import com.example.whale.repository.UserRepository;
 import com.example.whale.repository.querydsl.CustomArticleRepository;
-import com.example.whale.repository.querydsl.CustomAttachmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +29,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArticleService {
 
-    private final FileHandler fileHandler;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CustomArticleRepository customArticleRepository;
@@ -78,7 +75,7 @@ public class ArticleService {
         }
 
         if (!attachmentsShouldAddArticle.isEmpty()) {
-            updatedAttachments = fileHandler.parseFileInfo(findArticle, attachmentsShouldAddArticle);
+            updatedAttachments = new ArrayList<>();
             findArticle.getAttachments().clear();
             findArticle.getAttachments().addAll(updatedAttachments);
         } else {
@@ -93,15 +90,6 @@ public class ArticleService {
     }
 
     public Page<GetArticlePageResponseDTO> readArticlePage(Long lastArticleId, Pageable pageable) {
-//        Page<ArticleEntity> articleEntityPage = articleRepository.findAll(pageable);
-//        return articleEntityPage.map(articleEntity -> GetArticlePageResponseDTO.of(
-//                articleEntity.getId(),
-//                articleEntity.getTitle(),
-//                WriterResponseDTO.of(articleEntity.getWriter().getId(), articleEntity.getWriter().getNickname()),
-//                articleEntity.getComments().size()
-//                )
-//        );
-
         return customArticleRepository.readArticlePage(lastArticleId, pageable);
     }
 

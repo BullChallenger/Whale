@@ -1,5 +1,6 @@
 package com.example.whale.repository.querydsl;
 
+import com.example.whale.domain.ArticleEntity;
 import com.example.whale.dto.article.GetArticlePageResponseDTO;
 import com.example.whale.dto.article.GetArticleResponseDTO;
 import com.example.whale.dto.article.QGetArticlePageResponseDTO;
@@ -9,6 +10,7 @@ import com.example.whale.dto.attachment.QGetAttachmentResponseDTO;
 import com.example.whale.dto.comment.GetCommentResponseDTO;
 import com.example.whale.dto.comment.QGetCommentResponseDTO;
 import com.example.whale.dto.user.QWriterResponseDTO;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -24,6 +26,7 @@ import java.util.List;
 import static com.example.whale.domain.QArticleEntity.articleEntity;
 import static com.example.whale.domain.QAttachmentEntity.attachmentEntity;
 import static com.example.whale.domain.QCommentEntity.commentEntity;
+import static com.example.whale.domain.QHeartEntity.heartEntity;
 import static com.example.whale.domain.QUserEntity.userEntity;
 
 @Repository
@@ -38,10 +41,12 @@ public class CustomArticleRepository {
                     articleEntity.id,
                     userEntity.nickname,
                     articleEntity.title,
-                    articleEntity.content
+                    articleEntity.content,
+                    Expressions.numberTemplate(Integer.class, "count({0})", heartEntity.id)
                 )
         ).from(articleEntity)
          .innerJoin(articleEntity.writer, userEntity)
+         .leftJoin(articleEntity.hearts, heartEntity)
          .where(articleEntity.id.eq(articleId))
          .fetchOne();
 
@@ -62,7 +67,9 @@ public class CustomArticleRepository {
                 new QGetAttachmentResponseDTO(
                         attachmentEntity.id,
                         attachmentEntity.fileOriginName,
-                        attachmentEntity.fileUrl
+                        attachmentEntity.filePath,
+                        attachmentEntity.fileExtension,
+                        attachmentEntity.contentType
                 )
         ).from(attachmentEntity)
          .innerJoin(attachmentEntity.article, articleEntity)
@@ -102,12 +109,14 @@ public class CustomArticleRepository {
                             userEntity.id,
                             userEntity.nickname
                         ),
-                        Expressions.numberTemplate(Integer.class, "count({0})", commentEntity.id)
+                        Expressions.numberTemplate(Integer.class, "count({0})", commentEntity.id),
+                        Expressions.numberTemplate(Integer.class, "count({0})", heartEntity.id)
                 )
         ).from(articleEntity)
          .where(ltArticleId(lastArticleId))
          .innerJoin(articleEntity.writer, userEntity)
          .leftJoin(articleEntity.comments, commentEntity)
+         .innerJoin(articleEntity.hearts, heartEntity)
          .groupBy(articleEntity.id)
          .orderBy(articleEntity.id.desc())
          .limit(pageable.getPageSize())

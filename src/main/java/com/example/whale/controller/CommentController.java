@@ -1,6 +1,6 @@
 package com.example.whale.controller;
 
-import com.example.whale.controller.util.AuthenticationUtil;
+import com.example.whale.util.AuthenticationUtil;
 import com.example.whale.dto.ResponseDTO;
 import com.example.whale.dto.comment.CreateCommentDTO.CreateCommentRequestDTO;
 import com.example.whale.dto.comment.CreateCommentDTO.CreateCommentResponseDTO;

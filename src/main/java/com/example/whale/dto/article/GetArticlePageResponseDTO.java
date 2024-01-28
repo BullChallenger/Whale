@@ -12,22 +12,25 @@ public class GetArticlePageResponseDTO {
     private final String title;
     private final WriterResponseDTO writer;
     private final int commentCount;
+    private final int heartCount;
 
     @Builder
     @QueryProjection
-    public GetArticlePageResponseDTO(Long articleId, String title, WriterResponseDTO writer, int commentCount) {
+    public GetArticlePageResponseDTO(Long articleId, String title, WriterResponseDTO writer, int commentCount, int heartCount) {
         this.articleId = articleId;
         this.title = title;
         this.writer = writer;
         this.commentCount = commentCount;
+        this.heartCount = heartCount;
     }
 
-    public static GetArticlePageResponseDTO of(Long articleId, String title, WriterResponseDTO writer, int commentCount) {
+    public static GetArticlePageResponseDTO of(Long articleId, String title, WriterResponseDTO writer, int commentCount, int heartCount) {
         return GetArticlePageResponseDTO.builder()
                                         .articleId(articleId)
                                         .title(title)
                                         .writer(writer)
                                         .commentCount(commentCount)
+                                        .heartCount(heartCount)
                                         .build();
     }
 

@@ -41,7 +41,13 @@ public class UpdateArticleDTO {
 
         private GetAttachmentResponseDTO convertToDTO(AttachmentEntity attachment) {
             try {
-                return GetAttachmentResponseDTO.from(attachment.getId(), attachment.getFileOriginName(), attachment.getFileUrl());
+                return GetAttachmentResponseDTO.from(
+                        attachment.getId(),
+                        attachment.getFileOriginName(),
+                        attachment.getFilePath(),
+                        attachment.getFileExtension(),
+                        attachment.getContentType()
+                );
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);

@@ -12,7 +12,7 @@ public class CustomAttachmentRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public void deleteAttachmentInArticleById(Long attachmentId){
+    public void deleteAttachmentInArticleById(String attachmentId){
         queryFactory.update(attachmentEntity)
                     .set(attachmentEntity.isDeleted, true)
                     .where(attachmentEntity.id.eq(attachmentId))

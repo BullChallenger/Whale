@@ -1,4 +1,4 @@
-package com.example.whale.controller.util;
+package com.example.whale.util;
 
 import com.example.whale.dto.user.AuthenticationUser;
 import org.springframework.security.core.Authentication;
