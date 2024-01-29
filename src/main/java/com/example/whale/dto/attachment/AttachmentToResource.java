@@ -1,23 +1,27 @@
 package com.example.whale.dto.attachment;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
-public class AttachmentToResource {
+public class AttachmentToResource implements Serializable {
 
-    private final Resource resource;
+    private final byte[] resource;
     private final String encodedFileName;
     private final String extension;
     private final String contentType;
 
     @Builder
-    public AttachmentToResource(Resource resource, String encodedFileName, String extension, String contentType) {
+    public AttachmentToResource(byte[] resource, String encodedFileName, String extension, String contentType) {
         this.resource = resource;
         this.encodedFileName = encodedFileName;
         this.extension = extension;
@@ -25,12 +29,17 @@ public class AttachmentToResource {
     }
 
     public static AttachmentToResource from(GetAttachmentResponseDTO dto) {
-        return AttachmentToResource.builder()
-                .resource(new FileSystemResource(Paths.get(dto.getFilePath())))
-                .encodedFileName(URLEncoder.encode(dto.getFileOriginName(), StandardCharsets.UTF_8))
-                .extension(dto.getFileExtension())
-                .contentType(dto.getContentType())
-                .build();
+        try {
+            return AttachmentToResource.builder()
+                    .resource(Files.readAllBytes(Paths.get(dto.getFilePath())))
+                    .encodedFileName(URLEncoder.encode(dto.getFileOriginName(), StandardCharsets.UTF_8))
+                    .extension(dto.getFileExtension())
+                    .contentType(dto.getContentType())
+                    .build();
+        } catch (IOException e) {
+            log.error("Resource 를 InputStreamResource 로 전환하는 과정 중 에러 발생");
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
 }

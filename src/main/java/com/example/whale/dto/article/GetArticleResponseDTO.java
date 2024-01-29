@@ -1,19 +1,20 @@
 package com.example.whale.dto.article;
 
+import java.io.Serializable;
+import java.util.List;
+
 import com.example.whale.domain.ArticleEntity;
 import com.example.whale.dto.attachment.AttachmentToResource;
 import com.example.whale.dto.attachment.GetAttachmentResponseDTO;
 import com.example.whale.dto.comment.GetCommentResponseDTO;
 import com.example.whale.util.FileConverter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
-public class GetArticleResponseDTO {
+public class GetArticleResponseDTO implements Serializable {
 
     private final Long articleId;
     private final String writer;
