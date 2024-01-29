@@ -46,7 +46,8 @@ public class UpdateArticleDTO {
                         attachment.getFileOriginName(),
                         attachment.getFilePath(),
                         attachment.getFileExtension(),
-                        attachment.getContentType()
+                        attachment.getContentType(),
+                        attachment.getFileSize()
                 );
             } catch (IOException e) {
                 e.printStackTrace();

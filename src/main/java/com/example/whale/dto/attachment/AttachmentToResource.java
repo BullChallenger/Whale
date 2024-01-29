@@ -10,36 +10,39 @@ import java.nio.file.Paths;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 
 @Slf4j
 @Getter
 public class AttachmentToResource implements Serializable {
 
-    private final byte[] resource;
+    private final Resource resource;
     private final String encodedFileName;
     private final String extension;
     private final String contentType;
+    private final Long size;
 
     @Builder
-    public AttachmentToResource(byte[] resource, String encodedFileName, String extension, String contentType) {
+    public AttachmentToResource(Resource resource, String encodedFileName, String extension, String contentType,
+                                Long size) {
         this.resource = resource;
         this.encodedFileName = encodedFileName;
         this.extension = extension;
         this.contentType = contentType;
+        this.size = size;
     }
 
     public static AttachmentToResource from(GetAttachmentResponseDTO dto) {
-        try {
-            return AttachmentToResource.builder()
-                    .resource(Files.readAllBytes(Paths.get(dto.getFilePath())))
-                    .encodedFileName(URLEncoder.encode(dto.getFileOriginName(), StandardCharsets.UTF_8))
-                    .extension(dto.getFileExtension())
-                    .contentType(dto.getContentType())
-                    .build();
-        } catch (IOException e) {
-            log.error("Resource 를 InputStreamResource 로 전환하는 과정 중 에러 발생");
-            throw new RuntimeException(e.getMessage());
-        }
+        return AttachmentToResource.builder()
+                .resource(new FileSystemResource(Paths.get(dto.getFilePath())))
+                .encodedFileName(URLEncoder.encode(dto.getFileOriginName(), StandardCharsets.UTF_8))
+                .extension(dto.getFileExtension())
+                .contentType(dto.getContentType())
+                .size(dto.getSize())
+                .build();
     }
 
 }

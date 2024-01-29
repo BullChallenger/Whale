@@ -69,7 +69,8 @@ public class CustomArticleRepository {
                         attachmentEntity.fileOriginName,
                         attachmentEntity.filePath,
                         attachmentEntity.fileExtension,
-                        attachmentEntity.contentType
+                        attachmentEntity.contentType,
+                        attachmentEntity.fileSize
                 )
         ).from(attachmentEntity)
          .innerJoin(attachmentEntity.article, articleEntity)

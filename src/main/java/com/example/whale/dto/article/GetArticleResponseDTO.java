@@ -1,5 +1,6 @@
 package com.example.whale.dto.article;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class GetArticleResponseDTO implements Serializable {
     private final String title;
     private final String content;
     private List<GetCommentResponseDTO> comments;
+    @JsonIgnore
     private List<AttachmentToResource> attachments;
     private int heartCount;
 

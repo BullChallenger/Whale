@@ -1,10 +1,15 @@
 package com.example.whale.controller;
 
+import com.example.whale.util.MultipartResponseUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(value = "/api/articles")
 public class ArticleController extends BaseController {
 
+    private final MultipartResponseUtil multipartResponseUtil;
     private final ArticleService articleService;
     private final UploadService uploadService;
 
@@ -55,20 +61,13 @@ public class ArticleController extends BaseController {
     }
 
     @GetMapping(value = "/find/{articleId}")
-    public ResponseDTO<GetArticleResponseDTO> findArticleById(@PathVariable(value = "articleId") Long articleId) {
-        return ResponseDTO.ok(articleService.findArticleById(articleId));
-    }
-
-    private boolean isImage(String ext) {
-        return ".png".equalsIgnoreCase(ext) || ".jpg".equalsIgnoreCase(ext);
-    }
-
-    private String buildContentDispositionHeaderValue(String encodedFileName, String ext) {
-        if (isImage(ext)) {
-            return "inline; filename=" + encodedFileName + ext;
-        } else {
-            return "attachment; filename=" + encodedFileName + ext;
-        }
+    public ResponseEntity<Object> findArticleById(@PathVariable(value = "articleId") Long articleId) {
+        GetArticleResponseDTO articleById = articleService.findArticleById(articleId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_MIXED);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(multipartResponseUtil.createMultipartResponse(articleById, articleById.getAttachments()));
     }
 
     @PatchMapping(value = "/update")
