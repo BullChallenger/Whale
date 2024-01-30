@@ -59,18 +59,6 @@ public class ArticleController extends BaseController {
         return ResponseDTO.ok(articleService.findArticleById(articleId));
     }
 
-    private boolean isImage(String ext) {
-        return ".png".equalsIgnoreCase(ext) || ".jpg".equalsIgnoreCase(ext);
-    }
-
-    private String buildContentDispositionHeaderValue(String encodedFileName, String ext) {
-        if (isImage(ext)) {
-            return "inline; filename=" + encodedFileName + ext;
-        } else {
-            return "attachment; filename=" + encodedFileName + ext;
-        }
-    }
-
     @PatchMapping(value = "/update")
     public ResponseDTO<UpdateArticleResponseDTO> updateArticle(@RequestPart(value = "dto") UpdateArticleRequestDTO dto,
                                                                @RequestPart(value = "attachment", required = false) List<MultipartFile> attachments) throws IOException {
