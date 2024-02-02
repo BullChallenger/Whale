@@ -32,7 +32,7 @@ public class MultipartResponseUtil {
             responseBuilder.append("Content-Type: application/json").append(NEW_LINE);
             responseBuilder.append("Content-Length: ").append(StringUtils.getBytesUtf8(jsonString).length).append(NEW_LINE);
             responseBuilder.append(NEW_LINE);
-            responseBuilder.append(jsonString).append(NEW_LINE);
+            responseBuilder.append(jsonString).append(NEW_LINE).append(NEW_LINE);
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             throw new RuntimeException(e);
@@ -59,6 +59,7 @@ public class MultipartResponseUtil {
         builder.append("Content-Length: ").append(resource.getResource().contentLength()).append(NEW_LINE);
         builder.append(NEW_LINE);
         builder.append(resource.getResource()).append(NEW_LINE);
+        builder.append(NEW_LINE);
     }
 
     private boolean isImage(String ext) {
@@ -67,9 +68,9 @@ public class MultipartResponseUtil {
 
     private String buildContentDispositionHeaderValue(String encodedFileName, String ext) {
         if (isImage(ext)) {
-            return "inline; filename=\"" + encodedFileName + ext + "\"";
+            return "inline; filename=" + encodedFileName + ext;
         } else {
-            return "attachment; filename=\"" + encodedFileName + ext + "\"";
+            return "attachment; filename=" + encodedFileName + ext ;
         }
     }
 
