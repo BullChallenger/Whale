@@ -1,12 +1,12 @@
 package com.example.whale;
 
-import com.example.whale.constant.Role;
-import com.example.whale.domain.ArticleEntity;
-import com.example.whale.domain.CommentEntity;
-import com.example.whale.domain.UserEntity;
-import com.example.whale.repository.ArticleRepository;
-import com.example.whale.repository.CommentRepository;
-import com.example.whale.repository.UserRepository;
+import com.example.whale.global.constant.Role;
+import com.example.whale.domain.article.entity.ArticleEntity;
+import com.example.whale.domain.comment.entity.CommentEntity;
+import com.example.whale.domain.user.entity.UserEntity;
+import com.example.whale.domain.article.repository.ArticleRepository;
+import com.example.whale.domain.comment.repository.CommentRepository;
+import com.example.whale.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
