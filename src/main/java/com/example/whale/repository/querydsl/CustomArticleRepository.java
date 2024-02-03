@@ -137,4 +137,8 @@ public class CustomArticleRepository {
         return articleEntity.id.lt(articleId);
     }
 
+    public boolean isArticleExists(Long articleId) {
+        return queryFactory.from(articleEntity).where(articleEntity.id.eq(articleId)).fetchOne() != null;
+    }
+
 }
