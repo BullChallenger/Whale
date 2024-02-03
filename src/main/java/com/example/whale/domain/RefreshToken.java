@@ -1,10 +1,11 @@
 package com.example.whale.domain;
 
+import java.io.Serializable;
 import org.springframework.data.redis.core.TimeToLive;
 
 import javax.persistence.Id;
 
-public class RefreshToken {
+public class RefreshToken implements Serializable {
 
     @Id
     private String refreshToken;

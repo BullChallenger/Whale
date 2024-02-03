@@ -49,9 +49,10 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         AuthenticationUser authUser = (AuthenticationUser) authentication.getPrincipal();
 
         String refreshToken = jwtProvider.generateRefreshToken(authentication);
-        refreshTokenRepository.save(new RefreshToken(refreshToken, String.valueOf(authUser.getId()), refreshTokenExpiration));
-        ResponseCookie cookie = jwtProvider.setRefreshTokenInCookie(refreshToken);
-        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        refreshTokenRepository.save(
+                authUser.getEmail(),
+                new RefreshToken(refreshToken, String.valueOf(authUser.getId()), refreshTokenExpiration)
+        );
 
         String loginSuccessUserInfo = objectMapper.writeValueAsString(ResponseDTO.ok(LoginResponseDTO.from(authUser)));
 

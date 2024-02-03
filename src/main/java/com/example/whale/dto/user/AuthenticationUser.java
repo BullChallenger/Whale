@@ -1,41 +1,48 @@
 package com.example.whale.dto.user;
 
+import com.example.whale.domain.GrantedAuthorityImpl;
+import com.example.whale.domain.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.Serializable;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
 
-public class AuthenticationUser implements UserDetails  {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class AuthenticationUser implements UserDetails, Serializable {
 
     @Getter
-    private final Long id;
+    private Long id;
 
     @Getter
-    private final String email;
+    private String email;
 
     @Getter
-    private final String nickname;
+    private String nickname;
 
-    private final String username;
+    private String username;
 
-    private final String password;
+    private String password;
 
-    private final Set<GrantedAuthority> authorities;
+    private Set<GrantedAuthorityImpl> authorities;
 
-    private final boolean accountNonExpired;
+    private boolean accountNonExpired;
 
-    private final boolean accountNonLocked;
+    private boolean accountNonLocked;
 
-    private final boolean credentialsNonExpired;
+    private boolean credentialsNonExpired;
 
-    private final boolean enabled;
+    private boolean enabled;
 
     @Builder
     public AuthenticationUser(Long id, String email, String nickname, String username, String password,
-                              Set<GrantedAuthority> authorities, boolean accountNonExpired, boolean accountNonLocked,
+                              Set<GrantedAuthorityImpl> authorities, boolean accountNonExpired, boolean accountNonLocked,
                               boolean credentialsNonExpired, boolean enabled) {
         this.id = id;
         this.email = email;
@@ -49,8 +56,24 @@ public class AuthenticationUser implements UserDetails  {
         this.enabled = enabled;
     }
 
+    public static AuthenticationUser of(UserEntity entity, Set<GrantedAuthorityImpl> authorities) {
+        return AuthenticationUser.builder()
+                .id(entity.getId())
+                .email(entity.getEmail())
+                .nickname(entity.getNickname())
+                .username(entity.getUsername())
+                .password(entity.getPassword())
+                .authorities(authorities)
+                .accountNonExpired(true)
+                .accountNonLocked(true)
+                .credentialsNonExpired(true)
+                .enabled(true)
+                .build();
+    }
+
+
     public static AuthenticationUser of(Long id, String email, String nickname, String username, String password,
-                                        Set<GrantedAuthority> authorities) {
+                                        Set<GrantedAuthorityImpl> authorities) {
         return AuthenticationUser.builder()
                                     .id(id)
                                     .email(email)
@@ -65,7 +88,7 @@ public class AuthenticationUser implements UserDetails  {
                                     .build();
     }
 
-    public static AuthenticationUser of(Long id, String email, String nickname, String username, String password, Set<GrantedAuthority> authorities,
+    public static AuthenticationUser of(Long id, String email, String nickname, String username, String password, Set<GrantedAuthorityImpl> authorities,
                                         boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
         return AuthenticationUser.builder()
                                     .id(id)

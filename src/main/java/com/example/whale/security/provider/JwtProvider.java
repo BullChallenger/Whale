@@ -1,13 +1,13 @@
 package com.example.whale.security.provider;
 
 import com.example.whale.dto.user.AuthenticationUser;
+import com.example.whale.util.AuthenticationUtil;
 import com.example.whale.util.CookieUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,7 +56,7 @@ public class JwtProvider {
 
     public String generateAccessToken(Authentication authentication) {
         long now = new Date().getTime();
-        AuthenticationUser authUser = (AuthenticationUser) authentication.getPrincipal();
+        AuthenticationUser authUser = AuthenticationUtil.convertAuthentication(authentication);
 
         return Jwts.builder()
                 .signWith(secretKey, SIGNATURE_ALGORITHM)

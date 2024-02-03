@@ -19,23 +19,27 @@ public class RefreshTokenRepository {
     @Value("${jwt.refresh.expiration}")
     private long refreshTokenExpiration;
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplateForRefreshToken;
 
-    public void save(RefreshToken refreshToken) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(refreshToken.getRefreshToken(), String.valueOf(refreshToken.getUserId()));
-        redisTemplate.expire(refreshToken.getRefreshToken(), refreshTokenExpiration, TimeUnit.SECONDS);
+    public void save(String email, RefreshToken refreshToken) {
+        ValueOperations<String, Object> valueOperations = redisTemplateForRefreshToken.opsForValue();
+        valueOperations.set(email, refreshToken);
+        redisTemplateForRefreshToken.expire(refreshToken.getRefreshToken(), refreshTokenExpiration, TimeUnit.SECONDS);
     }
 
-    public Optional<RefreshToken> findById(String refreshToken) {
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String userId = valueOperations.get(refreshToken);
+    public Optional<RefreshToken> findById(String email) {
+        ValueOperations<String, Object> valueOperations = redisTemplateForRefreshToken.opsForValue();
+        Optional<RefreshToken> refreshToken = (Optional<RefreshToken>) valueOperations.get(email);
 
-        if (Objects.isNull(refreshToken)) {
+        if (refreshToken.isEmpty()) {
             return Optional.empty();
         }
 
-        return Optional.of(new RefreshToken(refreshToken, userId, refreshTokenExpiration));
+        return refreshToken;
+    }
+
+    public boolean isRefreshTokenExists(String email) {
+        return redisTemplateForRefreshToken.hasKey(email);
     }
 
 }
