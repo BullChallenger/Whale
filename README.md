@@ -29,3 +29,7 @@ ___
 ### ERD Table
 
 ![image](https://github.com/BullChallenger/Whale/assets/87288460/4b44abc0-02cd-4331-8ce8-9df9219498d9)
+
+---
+
+![image](docs/resource/erd-v2.png)
