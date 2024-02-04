@@ -1,14 +1,21 @@
 package com.example.whale.domain.article.repository.querydsl;
 
+import static com.example.whale.domain.Heart.entity.QHeartEntity.heartEntity;
+import static com.example.whale.domain.article.entity.QArticleEntity.articleEntity;
+import static com.example.whale.domain.attachment.entity.QAttachmentEntity.attachmentEntity;
+import static com.example.whale.domain.comment.entity.QCommentEntity.commentEntity;
+import static com.example.whale.domain.user.entity.QUserEntity.userEntity;
+
 import com.example.whale.domain.article.dto.GetArticlePageResponseDTO;
 import com.example.whale.domain.article.dto.GetArticleResponseDTO;
-import com.example.whale.dto.article.QGetArticlePageResponseDTO;
-import com.example.whale.dto.article.QGetArticleResponseDTO;
+import com.example.whale.domain.article.dto.QGetArticlePageResponseDTO;
+import com.example.whale.domain.article.dto.QGetArticleResponseDTO;
 import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
-import com.example.whale.dto.attachment.QGetAttachmentResponseDTO;
+import com.example.whale.domain.attachment.dto.QGetAttachmentResponseDTO;
 import com.example.whale.domain.comment.dto.GetCommentResponseDTO;
-import com.example.whale.dto.comment.QGetCommentResponseDTO;
-import com.example.whale.dto.user.QWriterResponseDTO;
+
+import com.example.whale.domain.comment.dto.QGetCommentResponseDTO;
+import com.example.whale.domain.user.dto.QWriterResponseDTO;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -20,12 +27,6 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
-import static com.example.whale.domain.QArticleEntity.articleEntity;
-import static com.example.whale.domain.QAttachmentEntity.attachmentEntity;
-import static com.example.whale.domain.QCommentEntity.commentEntity;
-import static com.example.whale.domain.QHeartEntity.heartEntity;
-import static com.example.whale.domain.QUserEntity.userEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -39,12 +40,10 @@ public class CustomArticleRepository {
                     articleEntity.id,
                     userEntity.nickname,
                     articleEntity.title,
-                    articleEntity.content,
-                    Expressions.numberTemplate(Integer.class, "count({0})", heartEntity.id)
+                    articleEntity.content
                 )
         ).from(articleEntity)
          .innerJoin(articleEntity.writer, userEntity)
-         .leftJoin(articleEntity.hearts, heartEntity)
          .where(articleEntity.id.eq(articleId))
          .fetchOne();
 
@@ -136,7 +135,11 @@ public class CustomArticleRepository {
     }
 
     public boolean isArticleExists(Long articleId) {
-        return queryFactory.from(articleEntity).where(articleEntity.id.eq(articleId)).fetchOne() != null;
+        return queryFactory
+                .selectOne()
+                .from(articleEntity)
+                .where(articleEntity.id.eq(articleId))
+                .fetchFirst() != null;
     }
 
 }

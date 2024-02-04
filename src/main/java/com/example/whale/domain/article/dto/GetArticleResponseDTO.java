@@ -22,16 +22,15 @@ public class GetArticleResponseDTO implements Serializable {
     private final String content;
     private List<GetCommentResponseDTO> comments;
     private List<AttachmentToResource> attachments;
-    private int heartCount;
+    private Long heartCount;
 
     @Builder
     @QueryProjection
-    public GetArticleResponseDTO(Long articleId, String writer, String title, String content, int heartCount) {
+    public GetArticleResponseDTO(Long articleId, String writer, String title, String content) {
         this.articleId = articleId;
         this.writer = writer;
         this.title = title;
         this.content = content;
-        this.heartCount = heartCount;
     }
 
     public static final GetArticleResponseDTO from(ArticleEntity articleEntity) {
@@ -40,7 +39,6 @@ public class GetArticleResponseDTO implements Serializable {
                                     .writer(articleEntity.getWriter().getNickname())
                                     .title(articleEntity.getTitle())
                                     .content(articleEntity.getContent())
-                                    .heartCount(articleEntity.getHearts().size())
                                     .build();
     }
 
@@ -50,6 +48,10 @@ public class GetArticleResponseDTO implements Serializable {
 
     public void setAttachmentInArticle(List<GetAttachmentResponseDTO> attachments) {
         this.attachments = FileConverter.responseFile(attachments);
+    }
+
+    public void setLikeCount(Long likeCount) {
+        this.heartCount = likeCount;
     }
 
 }

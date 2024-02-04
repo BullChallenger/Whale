@@ -1,5 +1,6 @@
 package com.example.whale.domain.article.controller;
 
+import com.example.whale.domain.article.service.ReadArticleServiceFacade;
 import com.example.whale.domain.common.controller.BaseController;
 import java.io.IOException;
 import java.util.List;
@@ -39,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 public class ArticleController extends BaseController {
 
     private final ArticleService articleService;
+    private final ReadArticleServiceFacade articleServiceFacade;
     private final UploadService uploadService;
 
     @PostMapping(value = "/save")
@@ -57,7 +59,7 @@ public class ArticleController extends BaseController {
 
     @GetMapping(value = "/find/{articleId}")
     public ResponseDTO<GetArticleResponseDTO> findArticleById(@PathVariable(value = "articleId") Long articleId) {
-        return ResponseDTO.ok(articleService.findArticleById(articleId));
+        return ResponseDTO.ok(articleServiceFacade.readArticleById(articleId));
     }
 
     @PatchMapping(value = "/update")

@@ -2,14 +2,14 @@ package com.example.whale.domain.comment.repository.querydsl;
 
 import com.example.whale.domain.comment.dto.GetCommentResponseDTO;
 import com.example.whale.domain.comment.dto.GetOneCommentDTO;
-import com.example.whale.dto.comment.QGetCommentResponseDTO;
-import com.example.whale.dto.comment.QGetOneCommentDTO;
+import com.example.whale.domain.comment.dto.QGetCommentResponseDTO;
+import com.example.whale.domain.comment.dto.QGetOneCommentDTO;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import static com.example.whale.domain.QCommentEntity.commentEntity;
-import static com.example.whale.domain.QUserEntity.userEntity;
+import static com.example.whale.domain.comment.entity.QCommentEntity.commentEntity;
+import static com.example.whale.domain.user.entity.QUserEntity.userEntity;
 
 @Repository
 @RequiredArgsConstructor
