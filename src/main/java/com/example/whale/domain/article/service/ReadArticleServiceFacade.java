@@ -1,11 +1,12 @@
 package com.example.whale.domain.article.service;
 
-import org.springframework.stereotype.Service;
-
 import com.example.whale.domain.Like.service.LikeService;
+import com.example.whale.domain.article.dto.GetArticlePageResponseDTO;
 import com.example.whale.domain.article.dto.GetArticleResponseDTO;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,15 @@ public class ReadArticleServiceFacade {
         GetArticleResponseDTO article = articleService.findArticleById(articleId);
         article.setLikeCount(likeService.getLikeCountInArticle(articleId));
         return article;
+    }
+
+    public Page<GetArticlePageResponseDTO> readArticlePage(Long lastArticleId, Pageable pageable) {
+        Page<GetArticlePageResponseDTO> articlePages = articleService.readArticlePage(lastArticleId, pageable);
+        articlePages.stream().forEach(
+                article -> article.setLikeCount(likeService.getLikeCountInArticle(article.getArticleId()))
+        );
+
+        return articlePages;
     }
 
 }

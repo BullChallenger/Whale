@@ -79,7 +79,7 @@ public class ArticleController extends BaseController {
     @GetMapping(value = "/read")
     public ResponseDTO<Page<GetArticlePageResponseDTO>> readArticlePage(@RequestParam(required = false) Long lastArticleId,
                                                                         Pageable pageable) {
-        return ResponseDTO.ok(articleService.readArticlePage(lastArticleId, pageable));
+        return ResponseDTO.ok(articleServiceFacade.readArticlePage(lastArticleId, pageable));
     }
 
 }

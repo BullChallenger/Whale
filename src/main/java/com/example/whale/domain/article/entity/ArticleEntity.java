@@ -1,9 +1,9 @@
 package com.example.whale.domain.article.entity;
 
+import com.example.whale.domain.Like.entity.LikeEntity;
 import com.example.whale.domain.attachment.entity.AttachmentEntity;
 import com.example.whale.domain.common.entity.BaseEntity;
 import com.example.whale.domain.comment.entity.CommentEntity;
-import com.example.whale.domain.Like.entity.LikeEntity;
 import com.example.whale.domain.user.entity.UserEntity;
 import java.util.ArrayList;
 import java.util.List;

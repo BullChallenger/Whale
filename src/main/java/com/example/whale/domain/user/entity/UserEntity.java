@@ -1,10 +1,9 @@
 package com.example.whale.domain.user.entity;
 
-import com.example.whale.domain.Like.entity.LikeEntity;
 import com.example.whale.global.constant.Role;
 import com.example.whale.domain.article.entity.ArticleEntity;
 import com.example.whale.domain.common.entity.BaseEntity;
-
+import com.example.whale.domain.Like.entity.LikeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

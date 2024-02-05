@@ -1,6 +1,6 @@
 package com.example.whale.domain.Like.repository.querydsl;
 
-import static com.example.whale.domain.Like.entity.QHeartEntity.*;
+import static com.example.whale.domain.Like.entity.QLikeEntity.likeEntity;
 
 import org.springframework.stereotype.Repository;
 
@@ -17,8 +17,8 @@ public class CustomLikeRepository {
     public boolean isLikeExists(Long userId, Long articleId) {
         return queryFactory
                 .selectOne()
-                .from(heartEntity)
-                .where(heartEntity.user.id.eq(userId).and(heartEntity.article.id.eq(articleId)))
+                .from(likeEntity)
+                .where(likeEntity.user.id.eq(userId).and(likeEntity.article.id.eq(articleId)))
                 .fetchFirst() != null;
     }
 
