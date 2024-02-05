@@ -1,9 +1,11 @@
 package com.example.whale.domain.article.service;
 
-import com.example.whale.domain.Heart.service.LikeService;
-import com.example.whale.domain.article.dto.GetArticleResponseDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import com.example.whale.domain.Like.service.LikeService;
+import com.example.whale.domain.article.dto.GetArticleResponseDTO;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

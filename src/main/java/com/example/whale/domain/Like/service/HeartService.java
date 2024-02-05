@@ -1,16 +1,19 @@
-package com.example.whale.domain.Heart.service;
+package com.example.whale.domain.Like.service;
 
-import com.example.whale.domain.Heart.dto.AddLikeRequestDTO;
-import com.example.whale.domain.Heart.entity.HeartEntity;
-import com.example.whale.domain.Heart.repository.HeartRepository;
-import com.example.whale.domain.Heart.repository.querydsl.CustomHeartRepository;
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.stereotype.Service;
+
+import com.example.whale.domain.Like.dto.AddLikeRequestDTO;
+import com.example.whale.domain.Like.entity.LikeEntity;
+import com.example.whale.domain.Like.repository.HeartRepository;
+import com.example.whale.domain.Like.repository.querydsl.CustomLikeRepository;
 import com.example.whale.domain.article.entity.ArticleEntity;
 import com.example.whale.domain.article.repository.ArticleRepository;
 import com.example.whale.domain.user.entity.UserEntity;
 import com.example.whale.domain.user.repository.UserRepository;
-import javax.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class HeartService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final HeartRepository heartRepository;
-    private final CustomHeartRepository customHeartRepository;
+    private final CustomLikeRepository customHeartRepository;
 
     public void addHeart(AddLikeRequestDTO dto) {
         Long userId = dto.getUserId();
@@ -32,11 +35,11 @@ public class HeartService {
                 () -> new EntityNotFoundException("존재하지 않는 게시글")
         );
 
-        if (customHeartRepository.isHeartExists(userId, articleId)) {
+        if (customHeartRepository.isLikeExists(userId, articleId)) {
             throw new IllegalArgumentException("이미 좋아요를 누른 게시글입니다.");
         }
 
-        heartRepository.save(HeartEntity.of(user, article));
+        heartRepository.save(LikeEntity.of(user, article));
     }
 
 }

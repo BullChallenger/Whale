@@ -1,11 +1,11 @@
 package com.example.whale.domain.article.dto;
 
-import com.example.whale.domain.attachment.dto.AttachmentToResource;
-import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
 import java.io.Serializable;
 import java.util.List;
 
 import com.example.whale.domain.article.entity.ArticleEntity;
+import com.example.whale.domain.attachment.dto.AttachmentToResource;
+import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
 import com.example.whale.domain.comment.dto.GetCommentResponseDTO;
 import com.example.whale.global.util.FileConverter;
 import com.querydsl.core.annotations.QueryProjection;
@@ -22,7 +22,7 @@ public class GetArticleResponseDTO implements Serializable {
     private final String content;
     private List<GetCommentResponseDTO> comments;
     private List<AttachmentToResource> attachments;
-    private Long heartCount;
+    private Long likeCount;
 
     @Builder
     @QueryProjection
@@ -33,7 +33,7 @@ public class GetArticleResponseDTO implements Serializable {
         this.content = content;
     }
 
-    public static final GetArticleResponseDTO from(ArticleEntity articleEntity) {
+    public static GetArticleResponseDTO from(ArticleEntity articleEntity) {
         return GetArticleResponseDTO.builder()
                                     .articleId(articleEntity.getId())
                                     .writer(articleEntity.getWriter().getNickname())
@@ -51,7 +51,7 @@ public class GetArticleResponseDTO implements Serializable {
     }
 
     public void setLikeCount(Long likeCount) {
-        this.heartCount = likeCount;
+        this.likeCount = likeCount;
     }
 
 }

@@ -1,9 +1,5 @@
 package com.example.whale.global.security.filter;
 
-import com.example.whale.global.security.repository.RefreshTokenRepository;
-import com.example.whale.global.security.provider.JwtProvider;
-import com.example.whale.global.security.service.LoginService;
-import io.jsonwebtoken.JwtException;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -11,14 +7,20 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.example.whale.global.security.provider.JwtProvider;
+import com.example.whale.global.security.repository.RefreshTokenRepository;
+import com.example.whale.global.security.service.LoginService;
+
+import io.jsonwebtoken.JwtException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -77,13 +79,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throw new JwtException("재로그인 필요");
         }
 
-        String reIssuedAccessToken = jwtProvider.generateAccessToken(
+		return jwtProvider.generateAccessToken(
                 jwtProvider.extractEmailInSubject(accessTokenInRequest).orElseThrow(),
                 jwtProvider.extractAuthoritiesInClaim(accessTokenInRequest).orElseThrow(),
                 jwtProvider.extractUserIdInClaim(accessTokenInRequest).orElseThrow()
         );
-
-        return reIssuedAccessToken;
     }
 
 }

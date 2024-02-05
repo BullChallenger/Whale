@@ -1,4 +1,4 @@
-package com.example.whale.domain.Heart.entity;
+package com.example.whale.domain.Like.entity;
 
 import com.example.whale.domain.article.entity.ArticleEntity;
 import com.example.whale.domain.user.entity.UserEntity;
@@ -22,7 +22,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class HeartEntity {
+public class LikeEntity {
 
     @Id
     @Column(name = "heart_id")
@@ -38,13 +38,13 @@ public class HeartEntity {
     private ArticleEntity article;
 
     @Builder
-    public HeartEntity(UserEntity user, ArticleEntity article) {
+    public LikeEntity(UserEntity user, ArticleEntity article) {
         this.user = user;
         this.article = article;
     }
 
-    public static final HeartEntity of(UserEntity user, ArticleEntity article) {
-        return HeartEntity.builder()
+    public static final LikeEntity of(UserEntity user, ArticleEntity article) {
+        return LikeEntity.builder()
                             .user(user)
                             .article(article)
                             .build();

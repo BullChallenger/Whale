@@ -1,16 +1,18 @@
-package com.example.whale.domain.Heart.controller;
+package com.example.whale.domain.Like.controller;
 
-import com.example.whale.domain.Heart.dto.AddLikeRequestDTO;
-import com.example.whale.domain.Heart.dto.SubLikeRequestDTO;
-import com.example.whale.domain.Heart.service.HeartService;
-import com.example.whale.domain.common.dto.ResponseDTO;
-import com.example.whale.domain.Heart.service.LikeService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.whale.domain.Like.dto.AddLikeRequestDTO;
+import com.example.whale.domain.Like.dto.SubLikeRequestDTO;
+import com.example.whale.domain.Like.service.HeartService;
+import com.example.whale.domain.Like.service.LikeService;
+import com.example.whale.domain.common.dto.ResponseDTO;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class LikeController {
     @PostMapping(value = "/add")
     public ResponseDTO<String> addLikeInArticle(@RequestBody AddLikeRequestDTO dto) {
         likeService.addLikeInArticle(dto);
-//        heartService.addHeart(dto);
+       // heartService.addHeart(dto);
         return ResponseDTO.ok("좋아요 성공");
     }
 

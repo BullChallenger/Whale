@@ -1,4 +1,4 @@
-package com.example.whale.domain.Heart.dto;
+package com.example.whale.domain.Like.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

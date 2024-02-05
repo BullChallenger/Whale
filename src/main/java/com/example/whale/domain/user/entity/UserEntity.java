@@ -1,9 +1,10 @@
 package com.example.whale.domain.user.entity;
 
+import com.example.whale.domain.Like.entity.LikeEntity;
 import com.example.whale.global.constant.Role;
 import com.example.whale.domain.article.entity.ArticleEntity;
 import com.example.whale.domain.common.entity.BaseEntity;
-import com.example.whale.domain.Heart.entity.HeartEntity;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,7 +43,7 @@ public class UserEntity extends BaseEntity {
     private List<ArticleEntity> articles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<HeartEntity> hearts = new ArrayList<>();
+    private List<LikeEntity> hearts = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;

@@ -1,8 +1,8 @@
-package com.example.whale.domain.Heart.service;
+package com.example.whale.domain.Like.service;
 
-import com.example.whale.domain.Heart.dto.AddLikeRequestDTO;
-import com.example.whale.domain.Heart.dto.SubLikeRequestDTO;
-import com.example.whale.domain.Heart.repository.CacheLikeRepository;
+import com.example.whale.domain.Like.dto.AddLikeRequestDTO;
+import com.example.whale.domain.Like.dto.SubLikeRequestDTO;
+import com.example.whale.domain.Like.repository.CacheLikeRepository;
 import com.example.whale.domain.article.repository.querydsl.CustomArticleRepository;
 import com.example.whale.domain.user.repository.querydsl.CustomUserRepository;
 import javax.persistence.EntityNotFoundException;

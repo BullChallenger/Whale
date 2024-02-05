@@ -1,31 +1,33 @@
 package com.example.whale.domain.article.service;
 
-import com.example.whale.domain.article.entity.ArticleEntity;
-import com.example.whale.domain.attachment.entity.AttachmentEntity;
-import com.example.whale.domain.user.entity.UserEntity;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.whale.domain.article.dto.CreateArticleDTO.CreateArticleRequestDTO;
 import com.example.whale.domain.article.dto.GetArticlePageResponseDTO;
 import com.example.whale.domain.article.dto.GetArticleResponseDTO;
 import com.example.whale.domain.article.dto.UpdateArticleDTO.UpdateArticleRequestDTO;
 import com.example.whale.domain.article.dto.UpdateArticleDTO.UpdateArticleResponseDTO;
+import com.example.whale.domain.article.entity.ArticleEntity;
 import com.example.whale.domain.article.repository.ArticleRepository;
-import com.example.whale.domain.user.repository.UserRepository;
 import com.example.whale.domain.article.repository.querydsl.CustomArticleRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
+import com.example.whale.domain.attachment.entity.AttachmentEntity;
+import com.example.whale.domain.user.entity.UserEntity;
+import com.example.whale.domain.user.repository.UserRepository;
 
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ArticleService {
 
@@ -33,6 +35,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final CustomArticleRepository customArticleRepository;
 
+    @Transactional
     public ArticleEntity saveArticle(Long userId, CreateArticleRequestDTO dto, List<MultipartFile> attachments) throws IOException {
         UserEntity writer = userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException("User Not Found!")
@@ -47,10 +50,12 @@ public class ArticleService {
         return articleRepository.save(article);
     }
 
+    @Transactional(readOnly = true)
     public GetArticleResponseDTO findArticleById(Long articleId) {
         return customArticleRepository.readArticleById(articleId);
     }
 
+    @Transactional
     public UpdateArticleResponseDTO updateArticle(UpdateArticleRequestDTO dto, List<MultipartFile> attachments) throws IOException {
         ArticleEntity findArticle = articleRepository.findById(dto.getArticleId()).orElseThrow(
                 () -> new EntityNotFoundException("Article Not Found!")
@@ -85,10 +90,12 @@ public class ArticleService {
         return UpdateArticleResponseDTO.from(findArticle);
     }
 
+    @Transactional
     public void deleteArticleById(Long articleId) {
         customArticleRepository.deleteArticleById(articleId);
     }
 
+    @Transactional(readOnly = true)
     public Page<GetArticlePageResponseDTO> readArticlePage(Long lastArticleId, Pageable pageable) {
         return customArticleRepository.readArticlePage(lastArticleId, pageable);
     }
