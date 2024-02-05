@@ -3,7 +3,7 @@ package com.example.whale.domain.article.entity;
 import com.example.whale.domain.attachment.entity.AttachmentEntity;
 import com.example.whale.domain.common.entity.BaseEntity;
 import com.example.whale.domain.comment.entity.CommentEntity;
-import com.example.whale.domain.Heart.entity.HeartEntity;
+import com.example.whale.domain.Like.entity.LikeEntity;
 import com.example.whale.domain.user.entity.UserEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +60,7 @@ public class ArticleEntity extends BaseEntity {
     private List<CommentEntity> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
-    private List<HeartEntity> hearts = new ArrayList<>();
+    private List<LikeEntity> hearts = new ArrayList<>();
 
     @Builder
     public ArticleEntity(UserEntity writer, String title, String content) {
