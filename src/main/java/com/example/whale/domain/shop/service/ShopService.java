@@ -25,7 +25,7 @@ public class ShopService {
 		if (customShopRepository.isSameShopNameAlreadyExists(dto.getShopName())) {
 			throw new IllegalArgumentException("동일한 이름을 사용하는 판매자가 이미 존재합니다.");
 		}
-		shopRepository.save(ShopEntity.of(dto.getShopName(), dto.getShopDescription()));
+		shopRepository.save(ShopEntity.from(dto.getShopName(), dto.getShopDescription()));
 
 		// TODO: 해당 판매자와 연결된 Whale Wallet 추가
 	}
@@ -53,7 +53,7 @@ public class ShopService {
 
 	public void deleteShopById(Long shopId) {
 		if (!customShopRepository.isShopExists(shopId)) {
-			throw new EntityNotFoundException("해당 판매자를 찾을 수 없습니다.")
+			throw new EntityNotFoundException("해당 판매자를 찾을 수 없습니다.");
 		}
 
 		shopRepository.deleteById(shopId);
