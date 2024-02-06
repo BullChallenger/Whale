@@ -1,9 +1,16 @@
 package com.example.whale.domain.article.repository.querydsl;
 
-import static com.example.whale.domain.article.entity.QArticleEntity.articleEntity;
-import static com.example.whale.domain.attachment.entity.QAttachmentEntity.attachmentEntity;
-import static com.example.whale.domain.comment.entity.QCommentEntity.commentEntity;
-import static com.example.whale.domain.user.entity.QUserEntity.userEntity;
+import static com.example.whale.domain.article.entity.QArticleEntity.*;
+import static com.example.whale.domain.attachment.entity.QAttachmentEntity.*;
+import static com.example.whale.domain.comment.entity.QCommentEntity.*;
+import static com.example.whale.domain.user.entity.QUserEntity.*;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 import com.example.whale.domain.article.dto.GetArticlePageResponseDTO;
 import com.example.whale.domain.article.dto.GetArticleResponseDTO;
@@ -12,20 +19,14 @@ import com.example.whale.domain.article.dto.QGetArticleResponseDTO;
 import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
 import com.example.whale.domain.attachment.dto.QGetAttachmentResponseDTO;
 import com.example.whale.domain.comment.dto.GetCommentResponseDTO;
-
 import com.example.whale.domain.comment.dto.QGetCommentResponseDTO;
 import com.example.whale.domain.user.dto.QWriterResponseDTO;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
@@ -133,10 +134,10 @@ public class CustomArticleRepository {
 
     public boolean isArticleExists(Long articleId) {
         return queryFactory
-                .selectOne()
-                .from(articleEntity)
-                .where(articleEntity.id.eq(articleId))
-                .fetchFirst() != null;
+            .selectOne()
+            .from(articleEntity)
+            .where(articleEntity.id.eq(articleId))
+            .fetchFirst() != null;
     }
 
 }

@@ -1,13 +1,16 @@
 package com.example.whale.domain.Like.service;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.stereotype.Service;
+
 import com.example.whale.domain.Like.dto.AddLikeRequestDTO;
 import com.example.whale.domain.Like.dto.SubLikeRequestDTO;
 import com.example.whale.domain.Like.repository.CacheLikeRepository;
 import com.example.whale.domain.article.repository.querydsl.CustomArticleRepository;
 import com.example.whale.domain.user.repository.querydsl.CustomUserRepository;
-import javax.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

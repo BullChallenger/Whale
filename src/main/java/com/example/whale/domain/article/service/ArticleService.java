@@ -41,13 +41,13 @@ public class ArticleService {
                 () -> new EntityNotFoundException("User Not Found!")
         );
 
-        ArticleEntity article = ArticleEntity.of(
+        return articleRepository.save(
+            ArticleEntity.of(
                 writer,
                 dto.getTitle(),
                 dto.getContent()
+            )
         );
-
-        return articleRepository.save(article);
     }
 
     @Transactional(readOnly = true)
