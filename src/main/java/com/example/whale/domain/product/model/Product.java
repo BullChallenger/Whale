@@ -1,7 +1,12 @@
 package com.example.whale.domain.product.model;
 
+import java.math.BigDecimal;
+import java.util.UUID;
+
 import com.example.whale.domain.product.constant.SellStatus;
 import com.example.whale.domain.product.entity.ProductEntity;
+import com.example.whale.domain.shop.model.Shop;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,19 +14,21 @@ import lombok.Getter;
 public class Product {
 
     private final String productId;
+    private Shop provider;
     private String productName;
     private ProductPrice productPrice;
-    private ProductStock productStock;
+    private ProductStock productStockQty;
     private String productDescription;
     private SellStatus sellStatus;
 
     @Builder
-    public Product(String productId, String productName, ProductPrice productPrice, ProductStock productStock,
+    public Product(String productId, Shop provider, String productName, BigDecimal productPrice, Long productStockQty,
                    String productDescription, SellStatus sellStatus) {
         this.productId = productId;
+        this.provider = provider;
         this.productName = productName;
-        this.productPrice = productPrice;
-        this.productStock = productStock;
+        this.productPrice = new ProductPrice(productPrice);
+        this.productStockQty = new ProductStock(productStockQty);
         this.productDescription = productDescription;
         this.sellStatus = sellStatus;
     }
@@ -29,12 +36,37 @@ public class Product {
     public static Product fromEntity(ProductEntity entity) {
         return Product.builder()
                 .productId(entity.getProductId())
-                .productName()
-                .productPrice()
-                .productStock()
-                .productDescription()
-                .sellStatus()
+                .provider(Shop.fromEntity(entity.getProvider()))
+                .productName(entity.getProductName())
+                .productPrice(entity.getProductPrice())
+                .productStockQty(entity.getProductStockQty())
+                .productDescription(entity.getProductDescription())
+                .sellStatus(entity.getSellStatus())
                 .build();
+    }
+
+    // TODO: DTO 확정 시 파라미터 변경
+    public static Product fromDTO(
+        Shop provider,
+        String productName,
+        BigDecimal productPrice,
+        Long productStockQty,
+        String productDescription,
+        SellStatus sellStatus
+    ) {
+        return Product.builder()
+            .productId(generateProductId())
+            .provider(provider)
+            .productName(productName)
+            .productPrice(productPrice)
+            .productStockQty(productStockQty)
+            .productDescription(productDescription)
+            .sellStatus(sellStatus)
+            .build();
+    }
+
+    private static String generateProductId() {
+        return UUID.randomUUID().toString();
     }
 
 }
