@@ -1,6 +1,6 @@
 package com.example.whale.domain.shop.repository.querydsl;
 
-import static com.example.whale.domain.article.entity.QArticleEntity.*;
+import static com.example.whale.domain.shop.entity.QShopEntity.*;
 
 import org.springframework.stereotype.Repository;
 

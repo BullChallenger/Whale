@@ -1,6 +1,7 @@
 package com.example.whale.domain.shop.model;
 
 import com.example.whale.domain.shop.entity.ShopEntity;
+import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ public class Shop {
 	private String shopDescription;
 
 	@Builder
+	@QueryProjection
 	public Shop(Long shopId, String shopName, String shopDescription) {
 		this.shopId = shopId;
 		this.shopName = shopName;

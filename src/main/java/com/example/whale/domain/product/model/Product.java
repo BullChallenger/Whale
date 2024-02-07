@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.example.whale.domain.product.constant.SellStatus;
 import com.example.whale.domain.product.entity.ProductEntity;
 import com.example.whale.domain.shop.model.Shop;
+import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class Product {
     private SellStatus sellStatus;
 
     @Builder
+    @QueryProjection
     public Product(String productId, Shop provider, String productName, BigDecimal productPrice, Long productStockQty,
                    String productDescription, SellStatus sellStatus) {
         this.productId = productId;
@@ -46,7 +48,7 @@ public class Product {
     }
 
     // TODO: DTO 확정 시 파라미터 변경
-    public static Product fromDTO(
+    public static Product of(
         Shop provider,
         String productName,
         BigDecimal productPrice,

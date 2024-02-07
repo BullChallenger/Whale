@@ -14,6 +14,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
+import com.example.whale.domain.common.entity.BaseEntity;
 import com.example.whale.domain.product.constant.SellStatus;
 import com.example.whale.domain.product.model.Product;
 import com.example.whale.domain.shop.entity.ShopEntity;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 @DynamicUpdate
 @Where(clause = "IS_DELETED = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProductEntity {
+public class ProductEntity extends BaseEntity {
 
     @Id
     @Column(nullable = false, unique = true)
@@ -62,10 +63,10 @@ public class ProductEntity {
         this.sellStatus = sellStatus;
     }
 
-    public static ProductEntity from(Product product) {
+    public static ProductEntity of(Product product) {
         return ProductEntity.builder()
             .productId(product.getProductId())
-            .provider(ShopEntity.from(product.getProvider()))
+            .provider(ShopEntity.of(product.getProvider()))
             .productName(product.getProductName())
             .productStockQty(product.getProductStockQty().getProductStockQty())
             .productPrice(product.getProductPrice().getProductPrice())
@@ -80,6 +81,14 @@ public class ProductEntity {
 
     public void subProductStockQty(Long quantity) {
         this.productStockQty -= quantity;
+    }
+
+    public void updateProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void updateProductDescription(String productDescription) {
+        this.productDescription = productDescription;
     }
 
 }

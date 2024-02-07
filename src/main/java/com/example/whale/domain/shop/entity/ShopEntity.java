@@ -41,14 +41,14 @@ public class ShopEntity extends BaseEntity {
 		this.shopDescription = shopDescription;
 	}
 
-	public static ShopEntity from(String shopName, String shopDescription) {
+	public static ShopEntity of(String shopName, String shopDescription) {
 		return ShopEntity.builder()
 			.shopName(shopName)
 			.shopDescription(shopDescription)
 			.build();
 	}
 
-	public static ShopEntity from(Shop shop) {
+	public static ShopEntity of(Shop shop) {
 		return ShopEntity.builder()
 			.shopName(shop.getShopName())
 			.shopDescription(shop.getShopDescription())
