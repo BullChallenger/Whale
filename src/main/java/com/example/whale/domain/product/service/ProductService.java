@@ -1,7 +1,5 @@
 package com.example.whale.domain.product.service;
 
-import java.util.Optional;
-
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -71,12 +69,11 @@ public class ProductService {
 
 	@Transactional
 	public void deleteProductById(String productId) {
-		Optional<ProductEntity> opProductEntity = productRepository.findById(productId);
-		if (opProductEntity.isEmpty()) {
+		if (!customProductRepository.isProductExists(productId)) {
 			throw new EntityNotFoundException("해당 품목을 찾을 수 없습니다.");
 		}
 
-		productRepository.delete(opProductEntity.get());
+		productRepository.deleteById(productId);
 	}
 
 }

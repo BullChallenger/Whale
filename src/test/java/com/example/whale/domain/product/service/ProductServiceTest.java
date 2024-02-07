@@ -147,15 +147,15 @@ class ProductServiceTest {
 	@DisplayName(value = "[성공]_제품_삭제")
 	void deleteProduct() {
 		// given
-		Mockito.doReturn(Optional.ofNullable(returnProductEntityValue())).when(productRepository).findById(DUMMY_PRODUCT_ID);
-		Mockito.doNothing().when(productRepository).delete(any(ProductEntity.class));
+		Mockito.doReturn(true).when(customProductRepository).isProductExists(DUMMY_PRODUCT_ID);
+		Mockito.doNothing().when(productRepository).deleteById(DUMMY_PRODUCT_ID);
 
 		// when
 		productService.deleteProductById(DUMMY_PRODUCT_ID);
 
 		// then
-		Mockito.verify(productRepository, Mockito.times(1)).findById(DUMMY_PRODUCT_ID);
-		Mockito.verify(productRepository, Mockito.times(1)).delete(any(ProductEntity.class));
+		Mockito.verify(customProductRepository, Mockito.times(1)).isProductExists(DUMMY_PRODUCT_ID);
+		Mockito.verify(productRepository, Mockito.times(1)).deleteById(DUMMY_PRODUCT_ID);
 	}
 
 }

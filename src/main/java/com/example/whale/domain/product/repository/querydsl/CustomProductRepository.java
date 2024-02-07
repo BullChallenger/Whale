@@ -20,6 +20,13 @@ public class CustomProductRepository {
 
 	private final JPAQueryFactory queryFactory;
 
+	public boolean isProductExists(String productId) {
+		return queryFactory.selectOne()
+			.from(productEntity)
+			.where(productEntity.productId.eq(productId))
+			.fetchFirst() != null;
+	}
+
 	public Optional<Product> readProductDetailsById(String productId) {
 		return Optional.ofNullable(
 			queryFactory.select(
