@@ -1,6 +1,7 @@
 package com.example.whale.domain.order.entity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,11 +11,12 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Where;
 
+import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.product.entity.ProductEntity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +24,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @DynamicInsert
 @DynamicUpdate
-@Where(clause = "IS_DELETED = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderLineEntity {
 
@@ -42,5 +43,31 @@ public class OrderLineEntity {
 	private BigDecimal totalAmount;
 
 	private BigDecimal totalAmountBeforeDiscount;
+
+	@Builder
+	public OrderLineEntity(String orderLineId, ProductEntity product, OrderEntity order, Long orderQuantity,
+		BigDecimal totalAmount, BigDecimal totalAmountBeforeDiscount) {
+		this.orderLineId = orderLineId;
+		this.product = product;
+		this.order = order;
+		this.orderQuantity = orderQuantity;
+		this.totalAmount = totalAmount;
+		this.totalAmountBeforeDiscount = totalAmountBeforeDiscount;
+	}
+
+	public static OrderLineEntity of(OrderLine orderLine) {
+		return OrderLineEntity.builder()
+			.orderLineId(orderLine.getOrderLineId())
+			.product(ProductEntity.of(orderLine.getProduct()))
+			.order(OrderEntity.of(orderLine.getOrder()))
+			.orderQuantity(orderLine.getOrderQuantity())
+			.totalAmount(orderLine.getTotalAmount())
+			.totalAmountBeforeDiscount(orderLine.getTotalAmountBeforeDiscount())
+			.build();
+	}
+
+	public static List<OrderLineEntity> collectToListOf(List<OrderLine> orderLines) {
+		return orderLines.stream().map(OrderLineEntity::of).toList();
+	}
 
 }

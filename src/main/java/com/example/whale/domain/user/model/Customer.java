@@ -1,6 +1,7 @@
 package com.example.whale.domain.user.model;
 
 import com.example.whale.domain.user.entity.UserEntity;
+import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,7 @@ public class Customer {
 	private final String nickname;
 
 	@Builder
+	@QueryProjection
 	public Customer(Long userId, String email, String username, String nickname) {
 		this.userId = userId;
 		this.email = email;

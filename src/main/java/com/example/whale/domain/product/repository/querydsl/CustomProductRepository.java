@@ -3,6 +3,7 @@ package com.example.whale.domain.product.repository.querydsl;
 import static com.example.whale.domain.product.entity.QProductEntity.*;
 import static com.example.whale.domain.shop.entity.QShopEntity.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -48,6 +49,27 @@ public class CustomProductRepository {
 			.where(productEntity.productId.eq(productId))
 			.fetchOne()
 		);
+	}
+
+	public List<Product> readProductDetailsByIds(List<String> productIds) {
+		return queryFactory.select(
+					new QProduct(
+						productEntity.productId,
+						new QShop(
+							shopEntity.shopId,
+							shopEntity.shopName,
+							shopEntity.shopDescription
+						),
+						productEntity.productName,
+						productEntity.productPrice,
+						productEntity.productStockQty,
+						productEntity.productDescription,
+						productEntity.sellStatus
+					)
+				).from(productEntity)
+				.innerJoin(productEntity.provider, shopEntity)
+				.where(productEntity.productId.in(productIds))
+				.fetch();
 	}
 
 }

@@ -71,4 +71,8 @@ public class Product {
         return UUID.randomUUID().toString();
     }
 
+    public void subStockQtyByPurchaseOrder(Long orderQuantity) {
+        this.productStockQty.subProductStockQty(orderQuantity);
+    }
+
 }

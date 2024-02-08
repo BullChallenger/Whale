@@ -15,20 +15,20 @@ public class OrderLine {
 
 	private final String orderLineId;
 	private final Product product;
-	private final Order order;
+	private Order order;
 	private final Long orderQuantity;
 	private final BigDecimal totalAmount;
 	private final BigDecimal totalAmountBeforeDiscount;
 
 	@Builder
-	public OrderLine(String orderLineId, Product product, Order order, Long orderQuantity, BigDecimal totalAmount,
-		BigDecimal totalAmountBeforeDiscount) {
+	public OrderLine(String orderLineId, Product product, Order order, Long orderQuantity) {
 		this.orderLineId = orderLineId;
 		this.product = product;
 		this.order = order;
 		this.orderQuantity = orderQuantity;
-		this.totalAmount = totalAmount;
-		this.totalAmountBeforeDiscount = totalAmountBeforeDiscount;
+		this.totalAmount = calculateTotalAmount(product, orderQuantity);
+		// TODO: 할인 적용 전 주문 금액 계산 로직 작성
+		this.totalAmountBeforeDiscount = calculateTotalAmount(product, orderQuantity);
 	}
 
 	public static OrderLine fromEntity(OrderLineEntity entity) {
@@ -37,13 +37,31 @@ public class OrderLine {
 			.product(Product.fromEntity(entity.getProduct()))
 			.order(Order.fromEntity(entity.getOrder()))
 			.orderQuantity(entity.getOrderQuantity())
-			.totalAmount(entity.getTotalAmount())
-			.totalAmountBeforeDiscount(entity.getTotalAmountBeforeDiscount())
 			.build();
 	}
 
 	public static List<OrderLine> toListFromEntity(List<OrderLineEntity> orderLines) {
 		return orderLines.stream().map(OrderLine::fromEntity).collect(Collectors.toList());
+	}
+
+	public static OrderLine of(
+		String orderLineId,
+		Product product,
+		Long orderQty
+	) {
+		return OrderLine.builder()
+			.orderLineId(orderLineId)
+			.product(product)
+			.orderQuantity(orderQty)
+			.build();
+	}
+
+	public void insertInOrder(Order order) {
+		this.order = order;
+	}
+
+	private BigDecimal calculateTotalAmount(Product product, Long orderQuantity) {
+		return product.getProductPrice().getProductPrice().multiply(BigDecimal.valueOf(orderQuantity));
 	}
 
 }

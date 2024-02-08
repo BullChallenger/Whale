@@ -6,18 +6,18 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
+import com.example.whale.domain.common.entity.BaseEntity;
 import com.example.whale.domain.order.constant.OrderStatus;
-import com.example.whale.domain.user.entity.UserEntity;
+import com.example.whale.domain.order.model.Order;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,14 +27,12 @@ import lombok.NoArgsConstructor;
 @DynamicUpdate
 @Where(clause = "IS_DELETED = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderEntity {
+public class OrderEntity extends BaseEntity {
 
 	@Id
-	private String orderId; // ${userId}:${productId}:${시간}
+	private String orderId; // ${userId}:${시간}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "customer_id")
-	private UserEntity customer;
+	private Long customerId;
 
 	@OneToMany(mappedBy = "order",fetch = FetchType.LAZY)
 	private List<OrderLineEntity> orderLines;
@@ -42,5 +40,25 @@ public class OrderEntity {
 	private OrderStatus orderStatus;
 
 	private BigDecimal totalAmountOfOrder;
+
+	@Builder
+	public OrderEntity(String orderId, Long customerId, List<OrderLineEntity> orderLines, OrderStatus orderStatus,
+		BigDecimal totalAmountOfOrder) {
+		this.orderId = orderId;
+		this.customerId = customerId;
+		this.orderLines = orderLines;
+		this.orderStatus = orderStatus;
+		this.totalAmountOfOrder = totalAmountOfOrder;
+	}
+
+	public static OrderEntity of(Order order) {
+		return OrderEntity.builder()
+			.orderId(order.getOrderId())
+			.customerId(order.getCustomerId())
+			.orderLines(OrderLineEntity.collectToListOf(order.getOrderLines()))
+			.orderStatus(OrderStatus.NEW_ORDER)
+			.totalAmountOfOrder(order.getTotalAmountOfOrder())
+			.build();
+	}
 
 }
