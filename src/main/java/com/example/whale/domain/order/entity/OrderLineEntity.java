@@ -1,8 +1,9 @@
 package com.example.whale.domain.order.entity;
 
+import com.example.whale.domain.common.entity.PersistableWrapper;
 import java.math.BigDecimal;
-import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -25,10 +26,11 @@ import lombok.NoArgsConstructor;
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderLineEntity {
+public class OrderLineEntity extends PersistableWrapper {
 
 	@Id
-	private String orderLineId; // ${orderId}:${productId}
+	@Column(name = "order_line_id", nullable = false, unique = true)
+	private String id; // ${orderId}:${productId}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
@@ -47,7 +49,7 @@ public class OrderLineEntity {
 	@Builder
 	public OrderLineEntity(String orderLineId, ProductEntity product, OrderEntity order, Long orderQuantity,
 		BigDecimal totalAmount, BigDecimal totalAmountBeforeDiscount) {
-		this.orderLineId = orderLineId;
+		this.id = orderLineId;
 		this.product = product;
 		this.order = order;
 		this.orderQuantity = orderQuantity;
@@ -66,8 +68,17 @@ public class OrderLineEntity {
 			.build();
 	}
 
-	public static List<OrderLineEntity> collectToListOf(List<OrderLine> orderLines) {
-		return orderLines.stream().map(OrderLineEntity::of).toList();
+	public static OrderLineEntity of(String orderLineId, ProductEntity product, Long orderQuantity) {
+		return OrderLineEntity.builder()
+				.orderLineId(orderLineId)
+				.product(product)
+				.orderQuantity(orderQuantity)
+				.totalAmount(product.getProductPrice().multiply(BigDecimal.valueOf(orderQuantity)))
+				.build();
+	}
+
+	public void insertInOrder(OrderEntity order) {
+		this.order = order;
 	}
 
 }

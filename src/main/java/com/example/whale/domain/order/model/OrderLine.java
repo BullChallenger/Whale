@@ -1,8 +1,8 @@
 package com.example.whale.domain.order.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.querydsl.core.annotations.QueryProjection;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import com.example.whale.domain.order.entity.OrderLineEntity;
 import com.example.whale.domain.product.model.Product;
@@ -31,17 +31,23 @@ public class OrderLine {
 		this.totalAmountBeforeDiscount = calculateTotalAmount(product, orderQuantity);
 	}
 
+	@QueryProjection
+	public OrderLine(String orderLineId, Product product, Long orderQuantity, BigDecimal totalAmount,
+					 BigDecimal totalAmountBeforeDiscount) {
+		this.orderLineId = orderLineId;
+		this.product = product;
+		this.orderQuantity = orderQuantity;
+		this.totalAmount = totalAmount;
+		this.totalAmountBeforeDiscount = totalAmountBeforeDiscount;
+	}
+
 	public static OrderLine fromEntity(OrderLineEntity entity) {
 		return OrderLine.builder()
-			.orderLineId(entity.getOrderLineId())
+			.orderLineId(entity.getId())
 			.product(Product.fromEntity(entity.getProduct()))
 			.order(Order.fromEntity(entity.getOrder()))
 			.orderQuantity(entity.getOrderQuantity())
 			.build();
-	}
-
-	public static List<OrderLine> toListFromEntity(List<OrderLineEntity> orderLines) {
-		return orderLines.stream().map(OrderLine::fromEntity).collect(Collectors.toList());
 	}
 
 	public static OrderLine of(
@@ -54,10 +60,6 @@ public class OrderLine {
 			.product(product)
 			.orderQuantity(orderQty)
 			.build();
-	}
-
-	public void insertInOrder(Order order) {
-		this.order = order;
 	}
 
 	private BigDecimal calculateTotalAmount(Product product, Long orderQuantity) {

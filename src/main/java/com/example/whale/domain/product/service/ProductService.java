@@ -31,17 +31,16 @@ public class ProductService {
 			() -> new EntityNotFoundException("해당 판매자를 찾을 수 없습니다.")
 		);
 
-		Product product = Product.of(
-			Shop.fromEntity(shop),
-			dto.getProductName(),
-			dto.getProductPrice(),
-			dto.getProductStockQty(),
-			dto.getProductDescription(),
-			dto.getSellStatus()
-		);
+		ProductEntity product = productRepository.save(ProductEntity.of(
+				shop,
+				dto.getProductName(),
+				dto.getProductStockQty(),
+				dto.getProductPrice(),
+				dto.getProductDescription(),
+				dto.getSellStatus()
+		));
 
-		productRepository.save(ProductEntity.of(product));
-		return product;
+		return Product.fromEntity(product);
 	}
 
 	@Transactional(readOnly = true)

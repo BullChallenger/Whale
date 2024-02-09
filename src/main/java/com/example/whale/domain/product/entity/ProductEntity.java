@@ -1,7 +1,10 @@
 package com.example.whale.domain.product.entity;
 
+import com.example.whale.domain.common.entity.PersistableWrapper;
 import java.math.BigDecimal;
 
+import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,6 +26,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Getter
@@ -30,13 +34,13 @@ import lombok.NoArgsConstructor;
 @DynamicUpdate
 @Where(clause = "IS_DELETED = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProductEntity extends BaseEntity {
+public class ProductEntity extends PersistableWrapper {
 
     @Id
-    @Column(nullable = false, unique = true)
-    private String productId;
+    @Column(nullable = false, unique = true, name = "product_id")
+    private String id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "provider_id")
     private ShopEntity provider;
 
@@ -54,7 +58,7 @@ public class ProductEntity extends BaseEntity {
     @Builder
     public ProductEntity(String productId, ShopEntity provider, String productName, Long productStockQty,
         BigDecimal productPrice, String productDescription, SellStatus sellStatus) {
-        this.productId = productId;
+        this.id = productId;
         this.provider = provider;
         this.productName = productName;
         this.productStockQty = productStockQty;
@@ -75,12 +79,21 @@ public class ProductEntity extends BaseEntity {
             .build();
     }
 
-    public void replenishProductStockQty(Long quantity) {
-        this.productStockQty += quantity;
+    public static ProductEntity of(ShopEntity provider, String productName, Long productStockQty, BigDecimal productPrice,
+                                   String productDescription, SellStatus sellStatus) {
+        return ProductEntity.builder()
+                .productId(generateProductId())
+                .provider(provider)
+                .productName(productName)
+                .productStockQty(productStockQty)
+                .productPrice(productPrice)
+                .productDescription(productDescription)
+                .sellStatus(sellStatus)
+                .build();
     }
 
-    public void subProductStockQty(Long quantity) {
-        this.productStockQty -= quantity;
+    private static String generateProductId() {
+        return UUID.randomUUID().toString();
     }
 
     public void updateProductName(String productName) {
@@ -89,6 +102,24 @@ public class ProductEntity extends BaseEntity {
 
     public void updateProductDescription(String productDescription) {
         this.productDescription = productDescription;
+    }
+
+    public void subProductStockQty(Long quantity) {
+        validateOrderStockQty(quantity);
+        this.productStockQty -= quantity;
+    }
+
+    private void validateOrderStockQty(Long quantity) {
+        validateOrderStockOutOfBound(quantity);
+        if (this.productStockQty < quantity) {
+            throw new IllegalArgumentException("해당 주문의 상품 수량보다 재고가 부족합니다.");
+        }
+    }
+
+    private void validateOrderStockOutOfBound(Long quantity) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("잘못된 주문 수량입니다.");
+        }
     }
 
 }

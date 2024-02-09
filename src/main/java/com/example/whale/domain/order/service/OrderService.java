@@ -1,10 +1,16 @@
 package com.example.whale.domain.order.service;
 
+import com.example.whale.domain.order.model.OrderLine;
+import com.example.whale.domain.order.repository.querydsl.CustomOrderLineRepository;
+import com.example.whale.domain.order.repository.querydsl.CustomOrderRepository;
+import com.example.whale.domain.product.entity.ProductEntity;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.whale.domain.order.constant.OrderStatus;
@@ -13,16 +19,14 @@ import com.example.whale.domain.order.dto.PurchaseOrderLineRequestDTO;
 import com.example.whale.domain.order.entity.OrderEntity;
 import com.example.whale.domain.order.entity.OrderLineEntity;
 import com.example.whale.domain.order.model.Order;
-import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.order.repository.OrderLineRepository;
 import com.example.whale.domain.order.repository.OrderRepository;
-import com.example.whale.domain.product.model.Product;
 import com.example.whale.domain.product.repository.ProductRepository;
-import com.example.whale.domain.product.repository.querydsl.CustomProductRepository;
 import com.example.whale.domain.user.model.Customer;
 import com.example.whale.domain.user.repository.querydsl.CustomUserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +34,12 @@ public class OrderService {
 
 	private final CustomUserRepository customUserRepository;
 	private final ProductRepository productRepository;
-	private final CustomProductRepository customProductRepository;
+	private final CustomOrderRepository customOrderRepository;
 	private final OrderRepository orderRepository;
+	private final CustomOrderLineRepository customOrderLineRepository;
 	private final OrderLineRepository orderLineRepository;
 
+	@Transactional
 	public Order createPurchaseOrder(CreatePurchaseOrderRequestDTO dto) {
 		Customer customer = customUserRepository.findCustomerById(dto.getUserId()).orElseThrow(
 			() -> new EntityNotFoundException("해당 고객을 찾을 수 없습니다.")
@@ -41,34 +47,54 @@ public class OrderService {
 
 		List<String> productIds = dto.getOrderLines().stream().map(PurchaseOrderLineRequestDTO::getProductId).toList();
 		List<Long> orderQuantities = dto.getOrderLines().stream().map(PurchaseOrderLineRequestDTO::getQuantity).toList();
-		List<Product> products = customProductRepository.readProductDetailsByIds(productIds);
+		List<ProductEntity> products = productRepository.findProductsByIds(productIds);
 
-		Order order = Order.of(customer);
-
-		List<OrderLine> orderLines = IntStream.range(0, products.size())
-			.mapToObj(idx -> OrderLine.of(
-				generateOrderLineId(order.getOrderId(), products.get(idx).getProductId()),
-				products.get(idx),
-				orderQuantities.get(idx)
-			)
-		).toList();
+		OrderEntity order = OrderEntity.of(customer);
+		List<OrderLineEntity> orderLines = combineProductInsideOrderLine(orderQuantities, products, order);
 
 		order.insertOrderLines(orderLines);
-		order.updateOrderStatus(OrderStatus.NEW_ORDER);
-		if (!order.isOrderLineNotEmpty()) {
-			throw new IllegalArgumentException("잘못된 주문 내역입니다.");
-		}
 		order.calculateTotalAmountOfOrder();
+		order.updateOrderStatus(OrderStatus.NEW_ORDER);
 
-		orderLines.forEach(orderLine -> orderLine.insertInOrder(order));
-		orderLineRepository.saveAll(OrderLineEntity.collectToListOf(orderLines));
-		orderRepository.save(OrderEntity.of(order));
+		orderRepository.save(order);
+		orderLineRepository.saveAll(orderLines);
+		productRepository.saveAll(products);
 
-		return order;
+		return Order.fromEntity(order);
+	}
+
+	private List<OrderLineEntity> combineProductInsideOrderLine(List<Long> orderQuantities, List<ProductEntity> products,
+													   OrderEntity order) {
+		List<OrderLineEntity> orderLines = new ArrayList<>();
+
+		for (int idx = 0; idx < products.size(); idx++) {
+			ProductEntity target = products.get(idx);
+			Long orderQuantity = orderQuantities.get(idx);
+			target.subProductStockQty(orderQuantity);
+			orderLines.add(
+					OrderLineEntity.of(
+							generateOrderLineId(order.getId(), target.getId()),
+							target,
+							orderQuantity
+					)
+			);
+		}
+
+		return orderLines;
 	}
 
 	private String generateOrderLineId(String orderId, String productId) {
 		return orderId + ":" + productId;
+	}
+
+	@Transactional(readOnly = true)
+	public Page<Order> readOrdersByCustomerId(Long customerId, Pageable pageable) {
+		return customOrderRepository.readOrdersByCustomerId(customerId, pageable);
+	}
+
+	@Transactional(readOnly = true)
+	public List<OrderLine> readOrderLinesByOrderId(String orderId) {
+		return customOrderLineRepository.readOrderLinesInOrder(orderId);
 	}
 
 }

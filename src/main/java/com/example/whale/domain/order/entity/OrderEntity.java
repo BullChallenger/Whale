@@ -1,8 +1,13 @@
 package com.example.whale.domain.order.entity;
 
+import com.example.whale.domain.common.entity.BaseEntity;
+import com.example.whale.domain.common.entity.PersistableWrapper;
+import com.example.whale.domain.user.model.Customer;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -12,7 +17,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
-import com.example.whale.domain.common.entity.BaseEntity;
 import com.example.whale.domain.order.constant.OrderStatus;
 import com.example.whale.domain.order.model.Order;
 
@@ -20,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Getter
@@ -27,14 +32,15 @@ import lombok.NoArgsConstructor;
 @DynamicUpdate
 @Where(clause = "IS_DELETED = false")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderEntity extends BaseEntity {
+public class OrderEntity extends PersistableWrapper {
 
 	@Id
-	private String orderId; // ${userId}:${시간}
+	@Column(name = "order_id", nullable = false, unique = true)
+	private String id; // ${userId}:${시간}
 
 	private Long customerId;
 
-	@OneToMany(mappedBy = "order",fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderLineEntity> orderLines;
 
 	private OrderStatus orderStatus;
@@ -42,23 +48,48 @@ public class OrderEntity extends BaseEntity {
 	private BigDecimal totalAmountOfOrder;
 
 	@Builder
-	public OrderEntity(String orderId, Long customerId, List<OrderLineEntity> orderLines, OrderStatus orderStatus,
-		BigDecimal totalAmountOfOrder) {
-		this.orderId = orderId;
+	public OrderEntity(String id, Long customerId, OrderStatus orderStatus, BigDecimal totalAmountOfOrder) {
+		this.id = id;
 		this.customerId = customerId;
-		this.orderLines = orderLines;
 		this.orderStatus = orderStatus;
 		this.totalAmountOfOrder = totalAmountOfOrder;
 	}
 
 	public static OrderEntity of(Order order) {
 		return OrderEntity.builder()
-			.orderId(order.getOrderId())
+			.id(order.getOrderId())
 			.customerId(order.getCustomerId())
-			.orderLines(OrderLineEntity.collectToListOf(order.getOrderLines()))
 			.orderStatus(OrderStatus.NEW_ORDER)
 			.totalAmountOfOrder(order.getTotalAmountOfOrder())
 			.build();
+	}
+
+	public static OrderEntity of(Customer customer) {
+		return OrderEntity.builder()
+				.id(generateOrderKey(customer.getUserId()))
+				.customerId(customer.getUserId())
+				.orderStatus(OrderStatus.NEW_ORDER)
+				.build();
+	}
+
+	private static String generateOrderKey(Long customerId) {
+		return customerId.toString() + ":" + System.currentTimeMillis();
+	}
+
+	public void insertOrderLines(List<OrderLineEntity> orderLines) {
+		this.orderLines = orderLines;
+		orderLines.forEach(orderLine -> orderLine.insertInOrder(this));
+	}
+
+	public void updateOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+	public void calculateTotalAmountOfOrder() {
+		this.totalAmountOfOrder =
+				this.orderLines.stream()
+						.map(OrderLineEntity::getTotalAmount)
+						.reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 }

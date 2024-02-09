@@ -37,7 +37,7 @@ public class Product {
 
     public static Product fromEntity(ProductEntity entity) {
         return Product.builder()
-                .productId(entity.getProductId())
+                .productId(entity.getId())
                 .provider(Shop.fromEntity(entity.getProvider()))
                 .productName(entity.getProductName())
                 .productPrice(entity.getProductPrice())
@@ -69,10 +69,6 @@ public class Product {
 
     private static String generateProductId() {
         return UUID.randomUUID().toString();
-    }
-
-    public void subStockQtyByPurchaseOrder(Long orderQuantity) {
-        this.productStockQty.subProductStockQty(orderQuantity);
     }
 
 }
