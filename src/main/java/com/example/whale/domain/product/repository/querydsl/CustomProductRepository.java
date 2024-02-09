@@ -3,6 +3,8 @@ package com.example.whale.domain.product.repository.querydsl;
 import static com.example.whale.domain.product.entity.QProductEntity.*;
 import static com.example.whale.domain.shop.entity.QShopEntity.*;
 
+import com.example.whale.domain.product.entity.ProductEntity;
+import com.querydsl.core.types.Projections;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +26,7 @@ public class CustomProductRepository {
 	public boolean isProductExists(String productId) {
 		return queryFactory.selectOne()
 			.from(productEntity)
-			.where(productEntity.productId.eq(productId))
+			.where(productEntity.id.eq(productId))
 			.fetchFirst() != null;
 	}
 
@@ -32,7 +34,7 @@ public class CustomProductRepository {
 		return Optional.ofNullable(
 			queryFactory.select(
 				new QProduct(
-					productEntity.productId,
+					productEntity.id,
 					new QShop(
 						shopEntity.shopId,
 						shopEntity.shopName,
@@ -46,30 +48,9 @@ public class CustomProductRepository {
 				)
 			).from(productEntity)
 			.innerJoin(productEntity.provider, shopEntity)
-			.where(productEntity.productId.eq(productId))
+			.where(productEntity.id.eq(productId))
 			.fetchOne()
 		);
-	}
-
-	public List<Product> readProductDetailsByIds(List<String> productIds) {
-		return queryFactory.select(
-					new QProduct(
-						productEntity.productId,
-						new QShop(
-							shopEntity.shopId,
-							shopEntity.shopName,
-							shopEntity.shopDescription
-						),
-						productEntity.productName,
-						productEntity.productPrice,
-						productEntity.productStockQty,
-						productEntity.productDescription,
-						productEntity.sellStatus
-					)
-				).from(productEntity)
-				.innerJoin(productEntity.provider, shopEntity)
-				.where(productEntity.productId.in(productIds))
-				.fetch();
 	}
 
 }
