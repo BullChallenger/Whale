@@ -2,9 +2,12 @@ package com.example.whale.domain.order.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
+import com.example.whale.domain.product.model.Product;
+import com.example.whale.domain.product.repository.ProductRepository;
+import com.example.whale.fixture.UserFixture;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +34,6 @@ import com.example.whale.domain.shop.entity.ShopEntity;
 import com.example.whale.domain.user.entity.UserEntity;
 import com.example.whale.domain.user.model.Customer;
 import com.example.whale.domain.user.repository.querydsl.CustomUserRepository;
-import com.example.whale.global.constant.Role;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -41,7 +43,7 @@ class OrderServiceTest {
 	@Mock
 	private CustomUserRepository customUserRepository;
 	@Mock
-	private CustomProductRepository customProductRepository;
+	private ProductRepository productRepository;
 	@Mock
 	private OrderRepository orderRepository;
 	@Mock
@@ -51,13 +53,10 @@ class OrderServiceTest {
 	private OrderService orderService;
 
 	private UserEntity returnUserEntityValue() {
-		return UserEntity.of(
-			"dummy@dummy.com",
-			"john doe",
-			"dummy",
-			"{noop}1234",
-			Role.USER
-		);
+		UserEntity fixture = Mockito.spy(UserFixture.getDefaultUserEntityFixture());
+		when(fixture.getId()).thenReturn(1L);
+
+		return fixture;
 	}
 
 	private CreatePurchaseOrderRequestDTO returnPurchaseOrderDTO() {
@@ -80,23 +79,18 @@ class OrderServiceTest {
 		long quantity = 3L;
 
 		return OrderLineEntity.builder()
-			.orderLineId(orderEntity.getOrderId())
+			.orderLineId(orderEntity.getId())
 			.product(productEntity)
-			.order(orderEntity)
 			.orderQuantity(quantity)
 			.totalAmount(productEntity.getProductPrice().multiply(BigDecimal.valueOf(quantity)))
 			.build();
 	}
 
 	private OrderEntity returnOrderEntityValue() {
-		List<OrderLineEntity> orderLines = List.of(returnOrderLineEntityValue());
-		UserEntity userEntity = returnUserEntityValue();
 		return OrderEntity.builder()
-			.orderId(userEntity.getId().toString() + LocalDateTime.now())
-			.customerId(userEntity.getId())
-			.orderLines(orderLines)
+			.id("1:" + System.currentTimeMillis())
+			.customerId(1L)
 			.orderStatus(OrderStatus.NEW_ORDER)
-			.totalAmountOfOrder(orderLines.stream().map(OrderLineEntity::getTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add))
 			.build();
 	}
 
@@ -116,16 +110,16 @@ class OrderServiceTest {
 	@DisplayName(value = "[성공]_주문_생성")
 	void createOrderSuccessTest() {
 		// given
-		Mockito.doReturn(List.of(returnProductEntityValue())).when(customProductRepository).readProductDetailsByIds(anyList());
-		Mockito.doReturn(Optional.ofNullable(Customer.fromEntity(returnUserEntityValue()))).when(customUserRepository).findCustomerById(anyLong());
+		Mockito.doReturn(List.of(Product.fromEntity(returnProductEntityValue()))).when(productRepository).findProductsByIds(anyList());
+		Mockito.doReturn(Optional.ofNullable(Customer.fromEntity(returnUserEntityValue()))).when(customUserRepository).findCustomerById(1L);
 		Mockito.doReturn(returnOrderEntityValue()).when(orderRepository).save(any(OrderEntity.class));
-		Mockito.doReturn(returnOrderLineEntityValue()).when(orderLineRepository).save(any(OrderLineEntity.class));
+		Mockito.doReturn(List.of(returnOrderEntityValue())).when(orderLineRepository).saveAll(anyList());
 
 		// when
 		Order purchaseOrder = orderService.createPurchaseOrder(returnPurchaseOrderDTO());
 
 		// then
-		assertThat(purchaseOrder.getOrderLines().get(0)).isEqualTo(returnOrderLineEntityValue());
+		assertThat(purchaseOrder.getTotalAmountOfOrder()).isEqualTo(BigDecimal.valueOf(3000L));
 	}
 
 }
