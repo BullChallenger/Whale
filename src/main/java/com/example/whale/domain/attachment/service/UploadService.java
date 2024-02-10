@@ -1,5 +1,7 @@
 package com.example.whale.domain.attachment.service;
 
+import com.example.whale.domain.attachment.entity.AttachmentEntity;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -15,10 +17,13 @@ public class UploadService {
 
 	private final AttachmentService attachmentService;
 
-	public void uploadAttachmentInArticle(ArticleEntity article, List<MultipartFile> attachments) {
+	public List<AttachmentEntity> uploadAttachmentInArticle(ArticleEntity article, List<MultipartFile> attachments) {
+		List<AttachmentEntity> attachmentsInArticle = new ArrayList<>();
 		for (MultipartFile attachment : attachments) {
-			attachmentService.upload(article, attachment);
+			attachmentsInArticle.add(attachmentService.upload(article, attachment));
 		}
+
+		return attachmentsInArticle;
 	}
 
 }

@@ -2,11 +2,9 @@ package com.example.whale.domain.order.model;
 
 import com.querydsl.core.annotations.QueryProjection;
 import java.math.BigDecimal;
-import java.util.List;
 
 import com.example.whale.domain.order.constant.OrderStatus;
 import com.example.whale.domain.order.entity.OrderEntity;
-import com.example.whale.domain.user.model.Customer;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -32,6 +30,7 @@ public class Order {
 		return Order.builder()
 			.orderId(entity.getId())
 			.customerId(entity.getCustomerId())
+			.orderStatus(entity.getOrderStatus())
 			.totalAmountOfOrder(entity.getTotalAmountOfOrder())
 			.build();
 	}

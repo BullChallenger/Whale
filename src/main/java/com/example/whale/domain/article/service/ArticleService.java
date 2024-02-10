@@ -1,6 +1,7 @@
 package com.example.whale.domain.article.service;
 
 import com.example.whale.domain.article.dto.GetArticleResponseConvertDTO;
+import com.example.whale.domain.attachment.service.UploadService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ public class ArticleService {
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CustomArticleRepository customArticleRepository;
+    private final UploadService uploadService;
 
     @Transactional
     public ArticleEntity saveArticle(Long userId, CreateArticleRequestDTO dto, List<MultipartFile> attachments) throws IOException {
@@ -42,13 +44,17 @@ public class ArticleService {
                 () -> new EntityNotFoundException("User Not Found!")
         );
 
-        return articleRepository.save(
-            ArticleEntity.of(
+        ArticleEntity article = ArticleEntity.of(
                 writer,
                 dto.getTitle(),
                 dto.getContent()
-            )
         );
+
+        if (attachments != null) {
+            article.getAttachments().addAttachmentsInArticle(uploadService.uploadAttachmentInArticle(article, attachments));
+        }
+
+        return articleRepository.save(article);
     }
 
     @Transactional(readOnly = true)
@@ -77,7 +83,7 @@ public class ArticleService {
         List<MultipartFile> attachmentsShouldAddArticle = new ArrayList<>();
         List<AttachmentEntity> updatedAttachments;
 
-        if (CollectionUtils.isEmpty(findArticle.getAttachments())) {
+        if (CollectionUtils.isEmpty(findArticle.getAttachments().attachments())) {
             if (!CollectionUtils.isEmpty(attachments)) {
                 attachmentsShouldAddArticle.addAll(attachments);
             }
@@ -87,10 +93,10 @@ public class ArticleService {
 
         if (!attachmentsShouldAddArticle.isEmpty()) {
             updatedAttachments = new ArrayList<>();
-            findArticle.getAttachments().clear();
-            findArticle.getAttachments().addAll(updatedAttachments);
+            findArticle.getAttachments().attachments().clear();
+            findArticle.getAttachments().attachments().addAll(updatedAttachments);
         } else {
-            findArticle.getAttachments().clear();
+            findArticle.getAttachments().attachments().clear();
         }
 
         return UpdateArticleResponseDTO.from(findArticle);

@@ -52,7 +52,7 @@ public class OrderService {
 		OrderEntity order = OrderEntity.of(customer);
 		List<OrderLineEntity> orderLines = combineProductInsideOrderLine(orderQuantities, products, order);
 
-		order.insertOrderLines(orderLines);
+		order.getOrderLineCollection().addOrderLineInOrder(order, orderLines);
 		order.calculateTotalAmountOfOrder();
 		order.updateOrderStatus(OrderStatus.NEW_ORDER);
 

@@ -51,9 +51,6 @@ public class UserEntity extends BaseEntity {
 
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<LikeEntity> hearts = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     private Role role;
 

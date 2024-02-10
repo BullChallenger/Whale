@@ -35,7 +35,7 @@ public class UpdateArticleDTO {
             return UpdateArticleResponseDTO.builder()
                                             .title(articleEntity.getTitle())
                                             .content(articleEntity.getContent())
-                                            .attachments(articleEntity.getAttachments())
+                                            .attachments(articleEntity.getAttachments().attachments())
                                             .build();
         }
 

@@ -160,7 +160,7 @@ public class CustomArticleRepository {
         ).from(articleEntity)
          .where(ltArticleId(lastArticleId))
          .innerJoin(articleEntity.writer, userEntity)
-         .leftJoin(articleEntity.comments, commentEntity)
+         .leftJoin(articleEntity.comments.comments, commentEntity)
          .groupBy(articleEntity.id)
          .orderBy(articleEntity.id.desc())
          .limit(pageable.getPageSize())

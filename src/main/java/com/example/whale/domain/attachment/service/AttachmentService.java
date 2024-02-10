@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public class AttachmentService {
 	}
 
 	@Transactional
-	public void upload(ArticleEntity article, MultipartFile file) {
+	public AttachmentEntity upload(ArticleEntity article, MultipartFile file) {
 		Path fileDir = Paths.get(attachmentDir);
 		String contentType = file.getContentType();
 		String extension = getExtensionFromMultipartFile(file);
@@ -66,7 +67,7 @@ public class AttachmentService {
 			file.getSize()
 		);
 
-		attachmentRepository.save(attachment);
+		return attachmentRepository.save(attachment);
 	}
 
 	private String generateRandomStr() {

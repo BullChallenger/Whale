@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -53,14 +54,11 @@ public class ArticleEntity extends BaseEntity {
     @Column(name = "ARTICLE_CONTENT")
     private String content;
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
-    private List<AttachmentEntity> attachments = new ArrayList<>();
+    @Embedded
+    private AttachmentCollection attachments = new AttachmentCollection();
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
-    private List<CommentEntity> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
-    private List<LikeEntity> hearts = new ArrayList<>();
+    @Embedded
+    private CommentCollection comments = new CommentCollection();
 
     @Builder
     public ArticleEntity(UserEntity writer, String title, String content) {
@@ -83,10 +81,6 @@ public class ArticleEntity extends BaseEntity {
 
     public void updateContent(String content) {
         this.content = content;
-    }
-
-    public void addCommentInArticle(CommentEntity commentEntity) {
-        this.comments.add(commentEntity);
     }
 
 }

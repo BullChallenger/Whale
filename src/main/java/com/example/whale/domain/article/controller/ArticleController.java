@@ -42,8 +42,6 @@ public class ArticleController extends BaseController {
 
     private final ArticleService articleService;
     private final ReadArticleServiceFacade articleServiceFacade;
-    private final UploadService uploadService;
-    private final ArticleRepository articleRepository;
 
     @PostMapping(value = "/save")
     public ResponseDTO<CreateArticleResponseDTO> saveArticle(
@@ -52,11 +50,7 @@ public class ArticleController extends BaseController {
             Authentication authentication) throws IOException
     {
         AuthenticationUser principal = AuthenticationUtil.convertAuthentication(authentication);
-        ArticleEntity article = articleService.saveArticle(principal.getId(), dto, attachments);
-        if (attachments != null) {
-            uploadService.uploadAttachmentInArticle(article, attachments);
-        }
-        return ResponseDTO.ok(CreateArticleResponseDTO.from(article));
+        return ResponseDTO.ok(CreateArticleResponseDTO.from(articleService.saveArticle(principal.getId(), dto, attachments)));
     }
 
     @GetMapping(value = "/find/{articleId}")

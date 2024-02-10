@@ -1,17 +1,16 @@
 package com.example.whale.domain.order.entity;
 
-import com.example.whale.domain.common.entity.BaseEntity;
 import com.example.whale.domain.common.entity.PersistableWrapper;
 import com.example.whale.domain.user.model.Customer;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -24,7 +23,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Persistable;
 
 @Entity
 @Getter
@@ -40,9 +38,10 @@ public class OrderEntity extends PersistableWrapper {
 
 	private Long customerId;
 
-	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderLineEntity> orderLines;
+	@Embedded
+	private OrderLineCollection orderLineCollection = new OrderLineCollection();
 
+	@Enumerated(EnumType.STRING)
 	private OrderStatus orderStatus;
 
 	private BigDecimal totalAmountOfOrder;
@@ -76,20 +75,12 @@ public class OrderEntity extends PersistableWrapper {
 		return customerId.toString() + ":" + System.currentTimeMillis();
 	}
 
-	public void insertOrderLines(List<OrderLineEntity> orderLines) {
-		this.orderLines = orderLines;
-		orderLines.forEach(orderLine -> orderLine.insertInOrder(this));
-	}
-
 	public void updateOrderStatus(OrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
 	}
 
 	public void calculateTotalAmountOfOrder() {
-		this.totalAmountOfOrder =
-				this.orderLines.stream()
-						.map(OrderLineEntity::getTotalAmount)
-						.reduce(BigDecimal.ZERO, BigDecimal::add);
+		this.totalAmountOfOrder = this.orderLineCollection.calculateTotalAmountOfOrder();
 	}
 
 }
