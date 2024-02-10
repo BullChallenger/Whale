@@ -5,6 +5,13 @@ import static com.example.whale.domain.attachment.entity.QAttachmentEntity.*;
 import static com.example.whale.domain.comment.entity.QCommentEntity.*;
 import static com.example.whale.domain.user.entity.QUserEntity.*;
 
+import com.example.whale.domain.article.dto.GetArticleResponseConvertDTO;
+import com.example.whale.domain.article.dto.GetArticleResponseDTOV2;
+import com.example.whale.domain.article.dto.QGetArticleResponseDTOV2;
+import com.example.whale.domain.article.entity.QArticleEntity;
+import com.example.whale.domain.attachment.entity.QAttachmentEntity;
+import com.example.whale.domain.comment.entity.QCommentEntity;
+import com.example.whale.domain.user.entity.QUserEntity;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -33,6 +40,48 @@ import lombok.RequiredArgsConstructor;
 public class CustomArticleRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    public GetArticleResponseConvertDTO readArticleByIdV2(Long articleId) {
+        QArticleEntity article = QArticleEntity.articleEntity;
+        QUserEntity a_writer = QUserEntity.userEntity;
+        QCommentEntity comment = QCommentEntity.commentEntity;
+        QUserEntity c_writer = new QUserEntity("c_writer");  // 별칭을 직접 지정
+        QAttachmentEntity attachment = QAttachmentEntity.attachmentEntity;
+
+        List<GetArticleResponseDTOV2> duplicatedArticleInfo = queryFactory
+                .selectDistinct(
+                        new QGetArticleResponseDTOV2(
+                                article.id,
+                                a_writer.nickname,
+                                article.title,
+                                article.content,
+                                comment.id,
+                                c_writer.nickname,
+                                comment.content,
+                                comment.depth,
+                                comment.parentComment.id,
+                                attachment.id,
+                                attachment.fileOriginName,
+                                attachment.filePath,
+                                attachment.fileExtension,
+                                attachment.contentType
+                        )
+                )
+                .from(article)
+                .innerJoin(a_writer).on(article.writer.id.eq(a_writer.id))
+                .leftJoin(comment).on(article.id.eq(comment.article.id))
+                .leftJoin(c_writer).on(comment.article.writer.id.eq(c_writer.id))
+                .leftJoin(attachment).on(article.id.eq(attachment.article.id))
+                .where(article.id.eq(articleId))
+                .fetch();
+
+        GetArticleResponseConvertDTO dto = GetArticleResponseConvertDTO.from(duplicatedArticleInfo.get(0));
+        for (GetArticleResponseDTOV2 origin : duplicatedArticleInfo) {
+            dto.convert(origin);
+        }
+
+        return dto;
+    }
 
     public GetArticleResponseDTO readArticleById(Long articleId) {
         GetArticleResponseDTO articleResponse =  queryFactory.select(

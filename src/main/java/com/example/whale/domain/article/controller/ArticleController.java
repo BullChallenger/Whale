@@ -1,5 +1,6 @@
 package com.example.whale.domain.article.controller;
 
+import com.example.whale.domain.article.dto.GetArticleResponseConvertDTO;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.whale.domain.article.dto.CreateArticleDTO.CreateArticleRequestDTO;
 import com.example.whale.domain.article.dto.CreateArticleDTO.CreateArticleResponseDTO;
 import com.example.whale.domain.article.dto.GetArticlePageResponseDTO;
-import com.example.whale.domain.article.dto.GetArticleResponseDTO;
 import com.example.whale.domain.article.dto.UpdateArticleDTO.UpdateArticleRequestDTO;
 import com.example.whale.domain.article.dto.UpdateArticleDTO.UpdateArticleResponseDTO;
 import com.example.whale.domain.article.entity.ArticleEntity;
@@ -60,8 +60,8 @@ public class ArticleController extends BaseController {
     }
 
     @GetMapping(value = "/find/{articleId}")
-    public ResponseDTO<GetArticleResponseDTO> findArticleById(@PathVariable(value = "articleId") Long articleId) {
-        return ResponseDTO.ok(articleServiceFacade.readArticleById(articleId));
+    public ResponseDTO<GetArticleResponseConvertDTO> findArticleById(@PathVariable(value = "articleId") Long articleId) {
+        return ResponseDTO.ok(articleServiceFacade.readArticleByIdV2(articleId));
     }
 
     @PatchMapping(value = "/update")

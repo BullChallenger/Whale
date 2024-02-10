@@ -1,6 +1,7 @@
 package com.example.whale.domain.article.service;
 
 import com.example.whale.domain.Like.service.LikeService;
+import com.example.whale.domain.article.dto.GetArticleResponseConvertDTO;
 import com.example.whale.domain.article.dto.GetArticlePageResponseDTO;
 import com.example.whale.domain.article.dto.GetArticleResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,12 @@ public class ReadArticleServiceFacade {
 
     public GetArticleResponseDTO readArticleById(Long articleId) {
         GetArticleResponseDTO article = articleService.findArticleById(articleId);
+        article.setLikeCount(likeService.getLikeCountInArticle(articleId));
+        return article;
+    }
+
+    public GetArticleResponseConvertDTO readArticleByIdV2(Long articleId) {
+        GetArticleResponseConvertDTO article = articleService.findArticleByIdV2(articleId);
         article.setLikeCount(likeService.getLikeCountInArticle(articleId));
         return article;
     }

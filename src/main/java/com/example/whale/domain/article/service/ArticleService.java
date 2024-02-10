@@ -1,5 +1,6 @@
 package com.example.whale.domain.article.service;
 
+import com.example.whale.domain.article.dto.GetArticleResponseConvertDTO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,11 @@ public class ArticleService {
                 dto.getContent()
             )
         );
+    }
+
+    @Transactional(readOnly = true)
+    public GetArticleResponseConvertDTO findArticleByIdV2(Long articleId) {
+        return customArticleRepository.readArticleByIdV2(articleId);
     }
 
     @Transactional(readOnly = true)
