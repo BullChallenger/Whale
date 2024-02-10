@@ -174,3 +174,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/windows,java,intellij+all,gradle
 images
 attachments/
+
+src/main/generated/
