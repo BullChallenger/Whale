@@ -51,9 +51,6 @@ public class UserEntity extends BaseEntity {
 
     private String password;
 
-    @OneToMany(mappedBy = "writer", fetch = FetchType.LAZY)
-    private List<ArticleEntity> articles = new ArrayList<>();
-
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<LikeEntity> hearts = new ArrayList<>();
 
@@ -93,10 +90,6 @@ public class UserEntity extends BaseEntity {
 
     public void updatePassword(String password) {
         this.password = password;
-    }
-
-    public void writeArticle(ArticleEntity article) {
-        this.articles.add(article);
     }
 
 }
