@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AttachmentCollection {
 
-    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<AttachmentEntity> attachments = new ArrayList<>();
 
     public void addAttachmentsInArticle(List<AttachmentEntity> attachments) {

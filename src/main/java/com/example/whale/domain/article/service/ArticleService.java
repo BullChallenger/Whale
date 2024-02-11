@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,10 +31,12 @@ import com.example.whale.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
 
+    private final EntityManager entityManager;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
     private final CustomArticleRepository customArticleRepository;
@@ -49,6 +53,8 @@ public class ArticleService {
                 dto.getTitle(),
                 dto.getContent()
         );
+
+        entityManager.persist(article);
 
         if (attachments != null) {
             article.getAttachments().addAttachmentsInArticle(uploadService.uploadAttachmentInArticle(article, attachments));
@@ -80,23 +86,11 @@ public class ArticleService {
             findArticle.updateContent(dto.getContent());
         }
 
-        List<MultipartFile> attachmentsShouldAddArticle = new ArrayList<>();
-        List<AttachmentEntity> updatedAttachments;
+        List<AttachmentEntity> attachmentsInArticle = findArticle.getAttachments().attachments();
+        attachmentsInArticle.clear();
 
-        if (CollectionUtils.isEmpty(findArticle.getAttachments().attachments())) {
-            if (!CollectionUtils.isEmpty(attachments)) {
-                attachmentsShouldAddArticle.addAll(attachments);
-            }
-        } else {
-            attachmentsShouldAddArticle.addAll(attachments);
-        }
-
-        if (!attachmentsShouldAddArticle.isEmpty()) {
-            updatedAttachments = new ArrayList<>();
-            findArticle.getAttachments().attachments().clear();
-            findArticle.getAttachments().attachments().addAll(updatedAttachments);
-        } else {
-            findArticle.getAttachments().attachments().clear();
+        if (attachments != null) {
+            attachmentsInArticle.addAll(uploadService.uploadAttachmentInArticle(findArticle, attachments));
         }
 
         return UpdateArticleResponseDTO.from(findArticle);
