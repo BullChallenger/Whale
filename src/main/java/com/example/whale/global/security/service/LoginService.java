@@ -36,7 +36,7 @@ public class LoginService implements UserDetailsService  {
         Optional<UserEntity> op = userRepository.findByEmail(username);
         if (op.isPresent()) {
             cacheUserRepository.saveAuthenticationUserInCache(op.get());
-            return AuthenticationUser.of(op.get(), roleUtil.addAuthorities(op.get().getRole()));
+            return AuthenticationUser.of(op.get(), roleUtil.addAllAuthorities(op.get().getRoles()));
         }
 
         throw new BadCredentialsException(NOT_FOUND_ENTITY_EXCEPTION);

@@ -1,9 +1,11 @@
 package com.example.whale.domain.user.entity;
 
+import com.example.whale.global.util.RoleListConverter;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -51,25 +53,25 @@ public class UserEntity extends BaseEntity {
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @Convert(converter = RoleListConverter.class)
+    private List<Role> roles;
 
     @Builder
-    public UserEntity(String email, String username, String nickname, String password, Role role) {
+    public UserEntity(String email, String username, String nickname, String password, List<Role> roles) {
         this.email = email;
         this.username = username;
         this.nickname = nickname;
         this.password = password;
-        this.role = role;
+        this.roles = roles;
     }
 
-    public static UserEntity of(String email, String username, String nickname, String password, Role role) {
+    public static UserEntity of(String email, String username, String nickname, String password, List<Role> roles) {
         return UserEntity.builder()
                 .email(email)
                 .username(username)
                 .nickname(nickname)
                 .password(password)
-                .role(role)
+                .roles(roles)
                 .build();
     }
 

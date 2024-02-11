@@ -20,7 +20,7 @@ public class CacheUserRepository {
     public void saveAuthenticationUserInCache(final UserEntity userEntity) {
         AuthenticationUser authenticationUser = AuthenticationUser.of(
                 userEntity,
-                roleUtil.addAuthorities(userEntity.getRole())
+                roleUtil.addAllAuthorities(userEntity.getRoles())
         );
 
         String key = generateCacheKey(userEntity.getEmail());

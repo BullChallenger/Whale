@@ -7,6 +7,7 @@ import com.example.whale.domain.user.dto.SignUpDTO.SignUpRequestDTO;
 import com.example.whale.domain.user.dto.UpdateUserDTO.UpdateUserRequestDTO;
 import com.example.whale.domain.user.dto.UpdateUserDTO.UpdateUserResponseDTO;
 import com.example.whale.domain.user.repository.UserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public void signUp(SignUpRequestDTO dto) {
-            userRepository.save(UserEntity.of(dto.getEmail(),
+            userRepository.save(UserEntity.of(
+                    dto.getEmail(),
                     dto.getUsername(),
                     dto.getNickname(),
                     passwordEncoder.encode(dto.getPassword()),
-                    Role.USER));
+                    List.of(Role.USER)
+                )
+            );
     }
 
     public FindUserResponseDTO findUserById(Long userId) {
