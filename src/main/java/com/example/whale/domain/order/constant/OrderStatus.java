@@ -1,5 +1,8 @@
 package com.example.whale.domain.order.constant;
 
+import lombok.Getter;
+
+@Getter
 public enum OrderStatus {
 
 	/** 신규 주문 : 결제 완료 후, 주문 확인 전 주문 **/

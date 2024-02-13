@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.whale.domain.common.dto.ResponseDTO;
+import com.example.whale.domain.order.model.OrderLine;
+import com.example.whale.domain.shop.dto.ConfirmOrderDTO;
 import com.example.whale.domain.shop.dto.UpdateShopInfoDTO;
 import com.example.whale.domain.shop.dto.ShopRegisterRequestDTO;
 import com.example.whale.domain.shop.service.ShopService;
@@ -45,6 +47,11 @@ public class ShopController {
 	public ResponseDTO<String> deleteShop(@PathVariable(value = "shopId") Long shopId) {
 		shopService.deleteShopById(shopId);
 		return ResponseDTO.ok("삭제 성공");
+	}
+
+	@PutMapping(value = "/confirm/order")
+	public ResponseDTO<OrderLine> updateOrderStatusInOrderLine(@RequestBody ConfirmOrderDTO dto) {
+		return ResponseDTO.ok(shopService.confirmOrder(dto));
 	}
 
 }

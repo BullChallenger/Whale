@@ -1,23 +1,19 @@
 package com.example.whale.domain.order.entity;
 
-import com.example.whale.domain.common.entity.PersistableWrapper;
-import com.example.whale.domain.user.model.Customer;
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
-import com.example.whale.domain.order.constant.OrderStatus;
+import com.example.whale.domain.common.entity.PersistableWrapper;
 import com.example.whale.domain.order.model.Order;
+import com.example.whale.domain.user.model.Customer;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,16 +37,12 @@ public class OrderEntity extends PersistableWrapper {
 	@Embedded
 	private OrderLineCollection orderLineCollection = new OrderLineCollection();
 
-	@Enumerated(EnumType.STRING)
-	private OrderStatus orderStatus;
-
 	private BigDecimal totalAmountOfOrder;
 
 	@Builder
-	public OrderEntity(String id, Long customerId, OrderStatus orderStatus, BigDecimal totalAmountOfOrder) {
+	public OrderEntity(String id, Long customerId, BigDecimal totalAmountOfOrder) {
 		this.id = id;
 		this.customerId = customerId;
-		this.orderStatus = orderStatus;
 		this.totalAmountOfOrder = totalAmountOfOrder;
 	}
 
@@ -58,7 +50,6 @@ public class OrderEntity extends PersistableWrapper {
 		return OrderEntity.builder()
 			.id(order.getOrderId())
 			.customerId(order.getCustomerId())
-			.orderStatus(OrderStatus.NEW_ORDER)
 			.totalAmountOfOrder(order.getTotalAmountOfOrder())
 			.build();
 	}
@@ -67,16 +58,11 @@ public class OrderEntity extends PersistableWrapper {
 		return OrderEntity.builder()
 				.id(generateOrderKey(customer.getUserId()))
 				.customerId(customer.getUserId())
-				.orderStatus(OrderStatus.NEW_ORDER)
 				.build();
 	}
 
 	private static String generateOrderKey(Long customerId) {
 		return customerId.toString() + ":" + System.currentTimeMillis();
-	}
-
-	public void updateOrderStatus(OrderStatus orderStatus) {
-		this.orderStatus = orderStatus;
 	}
 
 	public void calculateTotalAmountOfOrder() {

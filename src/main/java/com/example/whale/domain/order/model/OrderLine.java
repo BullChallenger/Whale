@@ -1,11 +1,11 @@
 package com.example.whale.domain.order.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.querydsl.core.annotations.QueryProjection;
 import java.math.BigDecimal;
 
+import com.example.whale.domain.order.constant.OrderStatus;
 import com.example.whale.domain.order.entity.OrderLineEntity;
 import com.example.whale.domain.product.model.Product;
+import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -19,9 +19,10 @@ public class OrderLine {
 	private final Long orderQuantity;
 	private final BigDecimal totalAmount;
 	private final BigDecimal totalAmountBeforeDiscount;
+	private final OrderStatus orderStatus;
 
 	@Builder
-	public OrderLine(String orderLineId, Product product, Order order, Long orderQuantity) {
+	public OrderLine(String orderLineId, Product product, Order order, Long orderQuantity, OrderStatus orderStatus) {
 		this.orderLineId = orderLineId;
 		this.product = product;
 		this.order = order;
@@ -29,16 +30,18 @@ public class OrderLine {
 		this.totalAmount = calculateTotalAmount(product, orderQuantity);
 		// TODO: 할인 적용 전 주문 금액 계산 로직 작성
 		this.totalAmountBeforeDiscount = calculateTotalAmount(product, orderQuantity);
+		this.orderStatus = orderStatus;
 	}
 
 	@QueryProjection
 	public OrderLine(String orderLineId, Product product, Long orderQuantity, BigDecimal totalAmount,
-					 BigDecimal totalAmountBeforeDiscount) {
+					 BigDecimal totalAmountBeforeDiscount, OrderStatus orderStatus) {
 		this.orderLineId = orderLineId;
 		this.product = product;
 		this.orderQuantity = orderQuantity;
 		this.totalAmount = totalAmount;
 		this.totalAmountBeforeDiscount = totalAmountBeforeDiscount;
+		this.orderStatus = orderStatus;
 	}
 
 	public static OrderLine fromEntity(OrderLineEntity entity) {
@@ -47,6 +50,7 @@ public class OrderLine {
 			.product(Product.fromEntity(entity.getProduct()))
 			.order(Order.fromEntity(entity.getOrder()))
 			.orderQuantity(entity.getOrderQuantity())
+			.orderStatus(entity.getOrderStatus())
 			.build();
 	}
 

@@ -1,17 +1,20 @@
 package com.example.whale.domain.order.repository.querydsl;
 
-import static com.example.whale.domain.order.entity.QOrderLineEntity.orderLineEntity;
-import static com.example.whale.domain.product.entity.QProductEntity.productEntity;
-import static com.example.whale.domain.shop.entity.QShopEntity.shopEntity;
+import static com.example.whale.domain.order.entity.QOrderLineEntity.*;
+import static com.example.whale.domain.product.entity.QProductEntity.*;
+import static com.example.whale.domain.shop.entity.QShopEntity.*;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
 
 import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.order.model.QOrderLine;
 import com.example.whale.domain.product.model.QProduct;
 import com.example.whale.domain.shop.model.QShop;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -38,7 +41,8 @@ public class CustomOrderLineRepository {
                         ),
                         orderLineEntity.orderQuantity,
                         orderLineEntity.totalAmount,
-                        orderLineEntity.totalAmountBeforeDiscount
+                        orderLineEntity.totalAmountBeforeDiscount,
+                        orderLineEntity.orderStatus
                 )
         ).from(orderLineEntity)
         .innerJoin(orderLineEntity.product, productEntity)

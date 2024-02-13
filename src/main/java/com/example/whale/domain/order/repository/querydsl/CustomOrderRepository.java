@@ -24,7 +24,6 @@ public class CustomOrderRepository {
                         new QOrder(
                                 orderEntity.id,
                                 orderEntity.customerId,
-                                orderEntity.orderStatus,
                                 orderEntity.totalAmountOfOrder
                         )
                 ).from(orderEntity)

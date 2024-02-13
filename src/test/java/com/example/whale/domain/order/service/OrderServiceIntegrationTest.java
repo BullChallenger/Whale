@@ -1,7 +1,7 @@
 package com.example.whale.domain.order.service;
 
 import static com.example.whale.fixture.OrderFixture.returnPurchaseOrderDTO;
-import static com.example.whale.fixture.ProductDTOFixture.returnProductRegisterDTOValue;
+import static com.example.whale.fixture.ProductFixture.returnProductRegisterDTOValue;
 import static com.example.whale.fixture.ShopFixture.returnRegisterShopRequestDTO;
 import static com.example.whale.fixture.UserFixture.returnSignUpRequestDTO;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -11,7 +11,7 @@ import com.example.whale.domain.product.model.Product;
 import com.example.whale.domain.product.service.ProductService;
 import com.example.whale.domain.shop.service.ShopService;
 import com.example.whale.domain.user.service.UserService;
-import java.math.BigDecimal;
+
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

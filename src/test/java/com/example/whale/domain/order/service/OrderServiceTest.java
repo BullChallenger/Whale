@@ -2,11 +2,8 @@ package com.example.whale.domain.order.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import com.example.whale.domain.product.model.Product;
-import com.example.whale.domain.product.repository.ProductRepository;
-import com.example.whale.fixture.UserFixture;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -19,21 +16,20 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.whale.domain.order.constant.OrderStatus;
 import com.example.whale.domain.order.dto.CreatePurchaseOrderRequestDTO;
 import com.example.whale.domain.order.dto.PurchaseOrderLineRequestDTO;
 import com.example.whale.domain.order.entity.OrderEntity;
-import com.example.whale.domain.order.entity.OrderLineEntity;
 import com.example.whale.domain.order.model.Order;
 import com.example.whale.domain.order.repository.OrderLineRepository;
 import com.example.whale.domain.order.repository.OrderRepository;
 import com.example.whale.domain.product.constant.SellStatus;
 import com.example.whale.domain.product.entity.ProductEntity;
-import com.example.whale.domain.product.repository.querydsl.CustomProductRepository;
+import com.example.whale.domain.product.repository.ProductRepository;
 import com.example.whale.domain.shop.entity.ShopEntity;
 import com.example.whale.domain.user.entity.UserEntity;
 import com.example.whale.domain.user.model.Customer;
 import com.example.whale.domain.user.repository.querydsl.CustomUserRepository;
+import com.example.whale.fixture.UserFixture;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -73,24 +69,10 @@ class OrderServiceTest {
 		);
 	}
 
-	private OrderLineEntity returnOrderLineEntityValue() {
-		OrderEntity orderEntity = returnOrderEntityValue();
-		ProductEntity productEntity = returnProductEntityValue();
-		long quantity = 3L;
-
-		return OrderLineEntity.builder()
-			.orderLineId(orderEntity.getId())
-			.product(productEntity)
-			.orderQuantity(quantity)
-			.totalAmount(productEntity.getProductPrice().multiply(BigDecimal.valueOf(quantity)))
-			.build();
-	}
-
 	private OrderEntity returnOrderEntityValue() {
 		return OrderEntity.builder()
 			.id("1:" + System.currentTimeMillis())
 			.customerId(1L)
-			.orderStatus(OrderStatus.NEW_ORDER)
 			.build();
 	}
 
@@ -110,7 +92,7 @@ class OrderServiceTest {
 	@DisplayName(value = "[성공]_주문_생성")
 	void createOrderSuccessTest() {
 		// given
-		Mockito.doReturn(List.of(Product.fromEntity(returnProductEntityValue()))).when(productRepository).findProductsByIds(anyList());
+		Mockito.doReturn(List.of(returnProductEntityValue())).when(productRepository).findProductsByIds(anyList());
 		Mockito.doReturn(Optional.ofNullable(Customer.fromEntity(returnUserEntityValue()))).when(customUserRepository).findCustomerById(1L);
 		Mockito.doReturn(returnOrderEntityValue()).when(orderRepository).save(any(OrderEntity.class));
 		Mockito.doReturn(List.of(returnOrderEntityValue())).when(orderLineRepository).saveAll(anyList());

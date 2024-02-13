@@ -1,9 +1,5 @@
 package com.example.whale.domain.order.service;
 
-import com.example.whale.domain.order.model.OrderLine;
-import com.example.whale.domain.order.repository.querydsl.CustomOrderLineRepository;
-import com.example.whale.domain.order.repository.querydsl.CustomOrderRepository;
-import com.example.whale.domain.product.entity.ProductEntity;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,21 +8,24 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.example.whale.domain.order.constant.OrderStatus;
 import com.example.whale.domain.order.dto.CreatePurchaseOrderRequestDTO;
 import com.example.whale.domain.order.dto.PurchaseOrderLineRequestDTO;
 import com.example.whale.domain.order.entity.OrderEntity;
 import com.example.whale.domain.order.entity.OrderLineEntity;
 import com.example.whale.domain.order.model.Order;
+import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.order.repository.OrderLineRepository;
 import com.example.whale.domain.order.repository.OrderRepository;
+import com.example.whale.domain.order.repository.querydsl.CustomOrderLineRepository;
+import com.example.whale.domain.order.repository.querydsl.CustomOrderRepository;
+import com.example.whale.domain.product.entity.ProductEntity;
 import com.example.whale.domain.product.repository.ProductRepository;
 import com.example.whale.domain.user.model.Customer;
 import com.example.whale.domain.user.repository.querydsl.CustomUserRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +53,6 @@ public class OrderService {
 
 		order.getOrderLineCollection().addOrderLineInOrder(order, orderLines);
 		order.calculateTotalAmountOfOrder();
-		order.updateOrderStatus(OrderStatus.NEW_ORDER);
 
 		orderRepository.save(order);
 		orderLineRepository.saveAll(orderLines);

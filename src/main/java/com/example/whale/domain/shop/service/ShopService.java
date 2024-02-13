@@ -1,12 +1,19 @@
 package com.example.whale.domain.shop.service;
 
+import java.util.Objects;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.whale.domain.shop.dto.UpdateShopInfoDTO;
+import com.example.whale.domain.order.constant.OrderStatus;
+import com.example.whale.domain.order.entity.OrderLineEntity;
+import com.example.whale.domain.order.model.OrderLine;
+import com.example.whale.domain.order.repository.OrderLineRepository;
+import com.example.whale.domain.shop.dto.ConfirmOrderDTO;
 import com.example.whale.domain.shop.dto.ShopRegisterRequestDTO;
+import com.example.whale.domain.shop.dto.UpdateShopInfoDTO;
 import com.example.whale.domain.shop.entity.ShopEntity;
 import com.example.whale.domain.shop.repository.ShopRepository;
 import com.example.whale.domain.shop.repository.querydsl.CustomShopRepository;
@@ -19,6 +26,7 @@ public class ShopService {
 
 	private final ShopRepository shopRepository;
 	private final CustomShopRepository customShopRepository;
+	private final OrderLineRepository orderLineRepository;
 
 	@Transactional
 	public void register(ShopRegisterRequestDTO dto) {
@@ -57,6 +65,22 @@ public class ShopService {
 		}
 
 		shopRepository.deleteById(shopId);
+	}
+
+	public OrderLine confirmOrder(ConfirmOrderDTO dto) {
+		OrderLineEntity orderLine = orderLineRepository.findById(dto.getOrderLineId()).orElseThrow(
+			() -> new EntityNotFoundException("해당 상세 주문 내역을 찾을 수 없습니다.")
+		);
+
+		if (!Objects.equals(orderLine.getProduct().getProvider().getShopId(), dto.getShopId())) {
+			throw new IllegalArgumentException("해당 상점은 이 주문에 대한 처리를 진행할 수 없습니다.");
+		}
+
+		if (dto.getStatus().equals(OrderStatus.WAITING_DELIVERY.getStatus())) {
+			orderLine.updateOrderStatus(OrderStatus.WAITING_DELIVERY);
+		}
+
+		return OrderLine.fromEntity(orderLine);
 	}
 
 }
