@@ -11,6 +11,7 @@ import com.example.whale.domain.order.constant.OrderStatus;
 import com.example.whale.domain.order.entity.OrderLineEntity;
 import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.order.repository.OrderLineRepository;
+import com.example.whale.domain.order.repository.querydsl.CustomOrderLineRepository;
 import com.example.whale.domain.shop.dto.ConfirmOrderDTO;
 import com.example.whale.domain.shop.dto.ShopRegisterRequestDTO;
 import com.example.whale.domain.shop.dto.UpdateShopInfoDTO;
@@ -27,6 +28,7 @@ public class ShopService {
 	private final ShopRepository shopRepository;
 	private final CustomShopRepository customShopRepository;
 	private final OrderLineRepository orderLineRepository;
+	private final CustomOrderLineRepository customOrderLineRepository;
 
 	@Transactional
 	public void register(ShopRegisterRequestDTO dto) {
@@ -82,5 +84,26 @@ public class ShopService {
 
 		return OrderLine.fromEntity(orderLine);
 	}
+
+	// public List<ReadOrderLineForShopDTO> readOrderLinesForShop(Long shopId) {
+	// 	return customOrderLineRepository.readOrderLinesForShop(shopId);
+	// }
+
+	// public Delivery orderDelivery(CourierCompany courierCompany, BigDecimal fee, String orderLineId, Address destination) {
+	// 	OrderLineEntity orderLine = orderLineRepository.findById(orderLineId).orElseThrow(
+	// 		() -> new EntityNotFoundException("존재하지 않는 주문입니다.")
+	// 	);
+	//
+	// 	DeliveryEntity.of(
+	// 		courierCompany,
+	// 		fee,
+	// 		orderLine,
+	// 		AddressEntity.of(
+	// 			destination.getZipcode(),
+	// 			destination.getAddress(),
+	// 			destination.getDetailAddress()
+	// 		)
+	// 	);
+	// }
 
 }

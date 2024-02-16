@@ -30,23 +30,23 @@ public class AddressEntity {
 
 	@JoinColumn(name = "user_id")
 	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE })
-	private UserEntity user;
+	private UserEntity receiver;
 
 	private String zipcode; // 우편번호
 	private String address; // 거주지
 	private String detailAddress; // 상세 주소
 
 	@Builder
-	public AddressEntity(UserEntity user, String zipcode, String address, String detailAddress) {
-		this.user = user;
+	public AddressEntity(UserEntity receiver, String zipcode, String address, String detailAddress) {
+		this.receiver = receiver;
 		this.zipcode = zipcode;
 		this.address = address;
 		this.detailAddress = detailAddress;
 	}
 
-	public static AddressEntity of(UserEntity user, String zipcode, String address, String detailAddress) {
+	public static AddressEntity of(UserEntity receiver, String zipcode, String address, String detailAddress) {
 		return AddressEntity.builder()
-			.user(user)
+			.receiver(receiver)
 			.zipcode(zipcode)
 			.address(address)
 			.detailAddress(detailAddress)

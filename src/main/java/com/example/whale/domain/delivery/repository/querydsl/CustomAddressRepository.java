@@ -27,7 +27,7 @@ public class CustomAddressRepository {
 				addressEntity.detailAddress
 			)
 		).from(addressEntity)
-		.where(addressEntity.user.id.eq(userId))
+		.where(addressEntity.receiver.id.eq(userId))
 		.fetch();
 	}
 
