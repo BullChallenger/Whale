@@ -33,6 +33,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final CustomLoginSuccessHandler customLoginSuccessHandler;
     private final AuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CorsConfig corsConfig;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -55,6 +56,7 @@ public class SecurityConfig {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/");
         http
+                .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(jsonUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter(), JsonUsernamePasswordAuthenticationFilter.class);
 
