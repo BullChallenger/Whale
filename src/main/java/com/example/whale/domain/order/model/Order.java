@@ -14,13 +14,15 @@ public class Order {
 	private final String orderId;
 	private final Long customerId;
 	private final BigDecimal totalAmountOfOrder;
+	private final Long destinationId;
 
 	@Builder
 	@QueryProjection
-	public Order(String orderId, Long customerId, BigDecimal totalAmountOfOrder) {
+	public Order(String orderId, Long customerId, BigDecimal totalAmountOfOrder, Long destinationId) {
 		this.orderId = orderId;
 		this.customerId = customerId;
 		this.totalAmountOfOrder = totalAmountOfOrder;
+		this.destinationId = destinationId;
 	}
 
 	public static Order fromEntity(OrderEntity entity) {
@@ -28,6 +30,7 @@ public class Order {
 			.orderId(entity.getId())
 			.customerId(entity.getCustomerId())
 			.totalAmountOfOrder(entity.getTotalAmountOfOrder())
+			.destinationId(entity.getDestinationId())
 			.build();
 	}
 

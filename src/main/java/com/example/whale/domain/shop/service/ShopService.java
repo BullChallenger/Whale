@@ -1,5 +1,7 @@
 package com.example.whale.domain.shop.service;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.EntityNotFoundException;
@@ -7,7 +9,13 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.whale.domain.delivery.constant.CourierCompany;
+import com.example.whale.domain.delivery.entity.AddressEntity;
+import com.example.whale.domain.delivery.entity.DeliveryEntity;
+import com.example.whale.domain.delivery.model.Delivery;
+import com.example.whale.domain.delivery.repository.AddressRepository;
 import com.example.whale.domain.order.constant.OrderStatus;
+import com.example.whale.domain.order.dto.ReadOrderLineForShopDTO;
 import com.example.whale.domain.order.entity.OrderLineEntity;
 import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.order.repository.OrderLineRepository;
@@ -29,6 +37,7 @@ public class ShopService {
 	private final CustomShopRepository customShopRepository;
 	private final OrderLineRepository orderLineRepository;
 	private final CustomOrderLineRepository customOrderLineRepository;
+	private final AddressRepository addressRepository;
 
 	@Transactional
 	public void register(ShopRegisterRequestDTO dto) {
@@ -85,25 +94,33 @@ public class ShopService {
 		return OrderLine.fromEntity(orderLine);
 	}
 
-	// public List<ReadOrderLineForShopDTO> readOrderLinesForShop(Long shopId) {
-	// 	return customOrderLineRepository.readOrderLinesForShop(shopId);
-	// }
+	// TODO: 미완
+	public List<ReadOrderLineForShopDTO> readOrderLinesForShop(Long shopId) {
+		return customOrderLineRepository.readOrderLinesForShop(shopId);
+	}
 
-	// public Delivery orderDelivery(CourierCompany courierCompany, BigDecimal fee, String orderLineId, Address destination) {
-	// 	OrderLineEntity orderLine = orderLineRepository.findById(orderLineId).orElseThrow(
-	// 		() -> new EntityNotFoundException("존재하지 않는 주문입니다.")
-	// 	);
-	//
-	// 	DeliveryEntity.of(
-	// 		courierCompany,
-	// 		fee,
-	// 		orderLine,
-	// 		AddressEntity.of(
-	// 			destination.getZipcode(),
-	// 			destination.getAddress(),
-	// 			destination.getDetailAddress()
-	// 		)
-	// 	);
-	// }
+	public Delivery orderDelivery(CourierCompany courierCompany, BigDecimal fee, String orderLineId) {
+		OrderLineEntity orderLine = orderLineRepository.findById(orderLineId).orElseThrow(
+			() -> new EntityNotFoundException("존재하지 않는 주문입니다.")
+		);
+
+		AddressEntity destination = addressRepository.findById(orderLine.getOrder().getDestinationId()).orElseThrow(
+			() -> new EntityNotFoundException("해당 주소를 찾을 수 없습니다.")
+		);
+
+		return startDelivery(courierCompany, fee, orderLine, destination);
+	}
+
+	private Delivery startDelivery(
+		CourierCompany courierCompany,
+		BigDecimal fee,
+		OrderLineEntity orderLine,
+		AddressEntity destination
+	) {
+		return Delivery.fromEntity(
+			DeliveryEntity.of(courierCompany, fee, orderLine, destination),
+			destination.getReceiver().getUsername()
+		);
+	}
 
 }

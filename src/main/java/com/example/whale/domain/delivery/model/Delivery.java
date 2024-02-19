@@ -20,20 +20,22 @@ public class Delivery {
 
 	private OrderLine orderLine;
 
+	private String receiverName;
 	private Address destination;
 
 	@Builder
 	public Delivery(String id, CourierCompany courierCompany, String invoiceNumber, BigDecimal fee, OrderLine orderLine,
-		Address destination) {
+		Address destination, String receiverName) {
 		this.id = id;
 		this.courierCompany = courierCompany;
 		this.invoiceNumber = invoiceNumber;
 		this.fee = fee;
 		this.orderLine = orderLine;
 		this.destination = destination;
+		this.receiverName = receiverName;
 	}
 
-	public static Delivery fromEntity(DeliveryEntity entity) {
+	public static Delivery fromEntity(DeliveryEntity entity, String receiverName) {
 		return Delivery.builder()
 				.id(entity.getId())
 				.courierCompany(entity.getCourierCompany())
@@ -41,6 +43,7 @@ public class Delivery {
 				.fee(entity.getFee())
 				.orderLine(OrderLine.fromEntity(entity.getOrderLine()))
 				.destination(Address.fromEntity(entity.getDestination()))
+				.receiverName(receiverName)
 			.build();
 	}
 

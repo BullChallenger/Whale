@@ -39,11 +39,14 @@ public class OrderEntity extends PersistableWrapper {
 
 	private BigDecimal totalAmountOfOrder;
 
+	private Long destinationId;
+
 	@Builder
-	public OrderEntity(String id, Long customerId, BigDecimal totalAmountOfOrder) {
+	public OrderEntity(String id, Long customerId, BigDecimal totalAmountOfOrder, Long destinationId) {
 		this.id = id;
 		this.customerId = customerId;
 		this.totalAmountOfOrder = totalAmountOfOrder;
+		this.destinationId = destinationId;
 	}
 
 	public static OrderEntity of(Order order) {
@@ -51,6 +54,7 @@ public class OrderEntity extends PersistableWrapper {
 			.id(order.getOrderId())
 			.customerId(order.getCustomerId())
 			.totalAmountOfOrder(order.getTotalAmountOfOrder())
+			.destinationId(order.getDestinationId())
 			.build();
 	}
 
