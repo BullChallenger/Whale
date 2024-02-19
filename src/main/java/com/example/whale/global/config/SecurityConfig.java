@@ -1,26 +1,28 @@
 package com.example.whale.global.config;
 
-import com.example.whale.global.security.filter.JwtAuthenticationFilter;
-import com.example.whale.global.security.handler.CustomLoginSuccessHandler;
-import com.example.whale.global.security.repository.RefreshTokenRepository;
-import com.example.whale.global.security.filter.JsonUsernamePasswordAuthenticationFilter;
-import com.example.whale.global.security.provider.JwtProvider;
-import com.example.whale.global.security.service.LoginService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
+
+import com.example.whale.global.security.filter.JsonUsernamePasswordAuthenticationFilter;
+import com.example.whale.global.security.filter.JwtAuthenticationFilter;
+import com.example.whale.global.security.handler.CustomLoginSuccessHandler;
+import com.example.whale.global.security.provider.JwtProvider;
+import com.example.whale.global.security.repository.RefreshTokenRepository;
+import com.example.whale.global.security.service.LoginService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
@@ -64,6 +66,16 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(0)
+    public SecurityFilterChain resources(HttpSecurity http) throws Exception {
+        return http.requestMatchers(matchers -> matchers.antMatchers(
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-resources/**")
+            ).authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll()).build();
+    }
+
+    @Bean
     public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
@@ -85,10 +97,4 @@ public class SecurityConfig {
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtProvider, refreshTokenRepository, loginService);
     }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**");
-    }
-
 }
