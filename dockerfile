@@ -12,13 +12,9 @@ WORKDIR /whale
 COPY ${JAR_FILE} whale.jar
 
 # Expose the port that the application will run on
-<<<<<<< Updated upstream
-EXPOSE 8080
-
 ENV PROFILE default
-=======
+
 EXPOSE 80
->>>>>>> Stashed changes
 
 # Command to run the application
 ENTRYPOINT ["java", "-Dspring.profiles.active=${PROFILE}", "-jar","/whale/whale.jar"]
