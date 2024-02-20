@@ -88,4 +88,8 @@ public class DeliveryEntity {
 			.build();
 	}
 
+	public void test() {
+
+	}
+
 }
