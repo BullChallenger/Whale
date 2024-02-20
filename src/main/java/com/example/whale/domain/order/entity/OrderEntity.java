@@ -73,4 +73,8 @@ public class OrderEntity extends PersistableWrapper {
 		this.totalAmountOfOrder = this.orderLineCollection.calculateTotalAmountOfOrder();
 	}
 
+	public void setDestinationIdForDelivery(Long destinationId) {
+		this.destinationId = destinationId;
+	}
+
 }

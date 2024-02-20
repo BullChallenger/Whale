@@ -53,6 +53,7 @@ public class OrderService {
 
 		order.getOrderLineCollection().addOrderLineInOrder(order, orderLines);
 		order.calculateTotalAmountOfOrder();
+		order.setDestinationIdForDelivery(dto.getDestinationId());
 
 		orderRepository.save(order);
 		orderLineRepository.saveAll(orderLines);

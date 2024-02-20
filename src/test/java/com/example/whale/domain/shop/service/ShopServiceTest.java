@@ -30,7 +30,7 @@ class ShopServiceTest {
 	private ShopService shopService;
 
 	private ConfirmOrderDTO returnConfirmOrderDTOValue() {
-		return new ConfirmOrderDTO(1L, "1", OrderStatus.WAITING_DELIVERY.getStatus());
+		return new ConfirmOrderDTO(1L, "1", OrderStatus.WAITING_DELIVERY);
 	}
 
 	@Test

@@ -54,5 +54,5 @@ public class UserController extends BaseController {
         userService.deleteUserById(userId);
         return ResponseDTO.ok();
     }
-    
+
 }

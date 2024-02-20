@@ -12,6 +12,7 @@ import com.example.whale.domain.delivery.entity.AddressEntity;
 import com.example.whale.domain.delivery.entity.DeliveryEntity;
 import com.example.whale.domain.delivery.model.Delivery;
 import com.example.whale.domain.delivery.repository.AddressRepository;
+import com.example.whale.domain.delivery.repository.DeliveryRepository;
 import com.example.whale.domain.order.constant.OrderStatus;
 import com.example.whale.domain.order.dto.ReadOrderLineForShopDTO;
 import com.example.whale.domain.order.entity.OrderLineEntity;
@@ -37,6 +38,7 @@ public class ShopService {
 	private final OrderLineRepository orderLineRepository;
 	private final CustomOrderLineRepository customOrderLineRepository;
 	private final AddressRepository addressRepository;
+	private final DeliveryRepository deliveryRepository;
 
 	@Transactional
 	public void register(ShopRegisterRequestDTO dto) {
@@ -77,6 +79,7 @@ public class ShopService {
 		shopRepository.deleteById(shopId);
 	}
 
+	@Transactional
 	public OrderLine confirmOrder(ConfirmOrderDTO dto) {
 		OrderLineEntity orderLine = orderLineRepository.findById(dto.getOrderLineId()).orElseThrow(
 			() -> new EntityNotFoundException("해당 상세 주문 내역을 찾을 수 없습니다.")
@@ -86,9 +89,7 @@ public class ShopService {
 			throw new IllegalArgumentException("해당 상점은 이 주문에 대한 처리를 진행할 수 없습니다.");
 		}
 
-		if (dto.getStatus().equals(OrderStatus.WAITING_DELIVERY.getStatus())) {
-			orderLine.updateOrderStatus(OrderStatus.WAITING_DELIVERY);
-		}
+		orderLine.updateOrderStatus(OrderStatus.WAITING_DELIVERY);
 
 		return OrderLine.fromEntity(orderLine);
 	}
@@ -107,18 +108,20 @@ public class ShopService {
 			() -> new EntityNotFoundException("해당 주소를 찾을 수 없습니다.")
 		);
 
-		return startDelivery(dto, orderLine, destination);
+		return startDelivery(saveDelivery(dto, orderLine, destination), getReceiverName(destination));
+ 	}
+
+	private static String getReceiverName(AddressEntity destination) {
+		return destination.getReceiver().getUsername();
 	}
 
-	private Delivery startDelivery(
-		DeliveryOrderRequestDTO dto,
-		OrderLineEntity orderLine,
-		AddressEntity destination
-	) {
-		return Delivery.fromEntity(
-			DeliveryEntity.of(dto.getCourierCompany(), dto.getDeliveryFee(), orderLine, destination),
-			destination.getReceiver().getUsername()
-		);
+	private Delivery startDelivery(DeliveryEntity entity, String receiverName) {
+		entity.getOrderLine().updateOrderStatus(OrderStatus.DELIVERY);
+		return Delivery.fromEntity(entity, receiverName);
+	}
+
+	private DeliveryEntity saveDelivery(DeliveryOrderRequestDTO dto, OrderLineEntity orderLine, AddressEntity destination) {
+		return deliveryRepository.save(DeliveryEntity.of(dto.getCourierCompany(), dto.getDeliveryFee(), orderLine, destination));
 	}
 
 }
