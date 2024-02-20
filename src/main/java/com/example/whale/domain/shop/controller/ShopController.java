@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.whale.domain.common.dto.ResponseDTO;
+import com.example.whale.domain.delivery.model.Delivery;
 import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.shop.dto.ConfirmOrderDTO;
+import com.example.whale.domain.shop.dto.DeliveryOrderRequestDTO;
 import com.example.whale.domain.shop.dto.UpdateShopInfoDTO;
 import com.example.whale.domain.shop.dto.ShopRegisterRequestDTO;
 import com.example.whale.domain.shop.service.ShopService;
@@ -52,6 +54,11 @@ public class ShopController {
 	@PutMapping(value = "/confirm/order")
 	public ResponseDTO<OrderLine> updateOrderStatusInOrderLine(@RequestBody ConfirmOrderDTO dto) {
 		return ResponseDTO.ok(shopService.confirmOrder(dto));
+	}
+
+	@PostMapping(value = "/delivery/order")
+	public ResponseDTO<Delivery> orderDelivery(@RequestBody DeliveryOrderRequestDTO dto) {
+		return ResponseDTO.ok(shopService.orderDelivery(dto));
 	}
 
 }

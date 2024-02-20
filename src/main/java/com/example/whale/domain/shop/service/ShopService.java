@@ -1,6 +1,5 @@
 package com.example.whale.domain.shop.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,7 +8,6 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.whale.domain.delivery.constant.CourierCompany;
 import com.example.whale.domain.delivery.entity.AddressEntity;
 import com.example.whale.domain.delivery.entity.DeliveryEntity;
 import com.example.whale.domain.delivery.model.Delivery;
@@ -21,6 +19,7 @@ import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.order.repository.OrderLineRepository;
 import com.example.whale.domain.order.repository.querydsl.CustomOrderLineRepository;
 import com.example.whale.domain.shop.dto.ConfirmOrderDTO;
+import com.example.whale.domain.shop.dto.DeliveryOrderRequestDTO;
 import com.example.whale.domain.shop.dto.ShopRegisterRequestDTO;
 import com.example.whale.domain.shop.dto.UpdateShopInfoDTO;
 import com.example.whale.domain.shop.entity.ShopEntity;
@@ -99,8 +98,8 @@ public class ShopService {
 		return customOrderLineRepository.readOrderLinesForShop(shopId);
 	}
 
-	public Delivery orderDelivery(CourierCompany courierCompany, BigDecimal fee, String orderLineId) {
-		OrderLineEntity orderLine = orderLineRepository.findById(orderLineId).orElseThrow(
+	public Delivery orderDelivery(DeliveryOrderRequestDTO dto) {
+		OrderLineEntity orderLine = orderLineRepository.findById(dto.getOrderLineId()).orElseThrow(
 			() -> new EntityNotFoundException("존재하지 않는 주문입니다.")
 		);
 
@@ -108,17 +107,16 @@ public class ShopService {
 			() -> new EntityNotFoundException("해당 주소를 찾을 수 없습니다.")
 		);
 
-		return startDelivery(courierCompany, fee, orderLine, destination);
+		return startDelivery(dto, orderLine, destination);
 	}
 
 	private Delivery startDelivery(
-		CourierCompany courierCompany,
-		BigDecimal fee,
+		DeliveryOrderRequestDTO dto,
 		OrderLineEntity orderLine,
 		AddressEntity destination
 	) {
 		return Delivery.fromEntity(
-			DeliveryEntity.of(courierCompany, fee, orderLine, destination),
+			DeliveryEntity.of(dto.getCourierCompany(), dto.getDeliveryFee(), orderLine, destination),
 			destination.getReceiver().getUsername()
 		);
 	}

@@ -1,17 +1,20 @@
 package com.example.whale.domain.order.repository.querydsl;
 
-import static com.example.whale.domain.order.entity.QOrderEntity.orderEntity;
+import static com.example.whale.domain.order.entity.QOrderEntity.*;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 import com.example.whale.domain.order.model.Order;
 import com.example.whale.domain.order.model.QOrder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,7 +27,8 @@ public class CustomOrderRepository {
                         new QOrder(
                                 orderEntity.id,
                                 orderEntity.customerId,
-                                orderEntity.totalAmountOfOrder
+                                orderEntity.totalAmountOfOrder,
+                                orderEntity.destinationId
                         )
                 ).from(orderEntity)
                 .where(orderEntity.customerId.eq(customerId))

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.whale.domain.delivery.model.Address;
 import com.example.whale.domain.delivery.model.QAddress;
+import com.example.whale.domain.user.model.QCustomer;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,12 @@ public class CustomAddressRepository {
 		return queryFactory.select(
 			new QAddress(
 				addressEntity.id,
+				new QCustomer(
+					addressEntity.receiver.id,
+					addressEntity.receiver.email,
+					addressEntity.receiver.username,
+					addressEntity.receiver.nickname
+				),
 				addressEntity.zipcode,
 				addressEntity.address,
 				addressEntity.detailAddress

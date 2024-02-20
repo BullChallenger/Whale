@@ -80,14 +80,14 @@ public class CustomOrderLineRepository {
                     orderLineEntity.totalAmountBeforeDiscount,
                     orderLineEntity.orderStatus
                 ),
-                new QCustomer(
-                    userEntity.id,
-                    userEntity.email,
-                    userEntity.username,
-                    userEntity.nickname
-                ),
                 new QAddress(
                     addressEntity.id,
+                    new QCustomer(
+                        userEntity.id,
+                        userEntity.email,
+                        userEntity.username,
+                        userEntity.nickname
+                    ),
                     addressEntity.zipcode,
                     addressEntity.address,
                     addressEntity.detailAddress
