@@ -54,9 +54,5 @@ public class UserController extends BaseController {
         userService.deleteUserById(userId);
         return ResponseDTO.ok();
     }
-
-    public void test() {
-        System.out.println("jenkins");
-    }
-
+    
 }
