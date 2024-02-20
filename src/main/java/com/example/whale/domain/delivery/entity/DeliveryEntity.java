@@ -87,9 +87,5 @@ public class DeliveryEntity {
 			.destination(destination)
 			.build();
 	}
-
-	public void test() {
-
-	}
-
+	
 }
