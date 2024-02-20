@@ -56,7 +56,7 @@ public class UserController extends BaseController {
     }
 
     public void test() {
-
+        System.out.println("jenkins");
     }
 
 }
