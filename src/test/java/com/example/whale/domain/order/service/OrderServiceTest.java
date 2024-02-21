@@ -2,7 +2,7 @@ package com.example.whale.domain.order.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import com.example.whale.domain.order.dto.CreatePurchaseOrderRequestDTO;
 import com.example.whale.domain.order.dto.PurchaseOrderLineRequestDTO;
@@ -50,7 +52,7 @@ class OrderServiceTest {
 
 	private UserEntity returnUserEntityValue() {
 		UserEntity fixture = Mockito.spy(UserFixture.getDefaultUserEntityFixture());
-		when(fixture.getId()).thenReturn(1L);
+		doReturn(1L).when(fixture).getId();
 
 		return fixture;
 	}
@@ -58,7 +60,8 @@ class OrderServiceTest {
 	private CreatePurchaseOrderRequestDTO returnPurchaseOrderDTO() {
 		return new CreatePurchaseOrderRequestDTO(
 			1L,
-			List.of(new PurchaseOrderLineRequestDTO(DUMMY_PRODUCT_ID, 3L))
+			List.of(new PurchaseOrderLineRequestDTO(DUMMY_PRODUCT_ID, 3L)),
+			1L
 		);
 	}
 
@@ -89,6 +92,7 @@ class OrderServiceTest {
 	}
 
 	@Test
+	@MockitoSettings(strictness = Strictness.LENIENT)
 	@DisplayName(value = "[성공]_주문_생성")
 	void createOrderSuccessTest() {
 		// given

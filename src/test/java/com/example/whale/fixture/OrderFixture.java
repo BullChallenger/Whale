@@ -20,7 +20,8 @@ public class OrderFixture {
                 List.of(new PurchaseOrderLineRequestDTO(
                         productId,
                         1L
-                ))
+                )),
+            1L
         );
     }
 
