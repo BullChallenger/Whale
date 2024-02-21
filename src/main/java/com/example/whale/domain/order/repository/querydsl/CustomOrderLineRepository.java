@@ -12,9 +12,11 @@ import org.springframework.stereotype.Repository;
 
 import com.example.whale.domain.delivery.model.QAddress;
 import com.example.whale.domain.order.dto.QReadOrderLineForShopDTO;
+import com.example.whale.domain.order.dto.QReadOrderLinesResponseDTO;
 import com.example.whale.domain.order.dto.ReadOrderLineForShopDTO;
-import com.example.whale.domain.order.model.OrderLine;
+import com.example.whale.domain.order.dto.ReadOrderLinesResponseDTO;
 import com.example.whale.domain.order.model.QOrderLine;
+import com.example.whale.domain.product.dto.QProductInfoInOrderLineDTO;
 import com.example.whale.domain.product.model.QProduct;
 import com.example.whale.domain.shop.model.QShop;
 import com.example.whale.domain.user.model.QCustomer;
@@ -28,11 +30,11 @@ public class CustomOrderLineRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<OrderLine> readOrderLinesInOrder(String orderId) {
+    public List<ReadOrderLinesResponseDTO> readOrderLinesInOrder(String orderId) {
         return queryFactory.select(
-                new QOrderLine(
+                new QReadOrderLinesResponseDTO(
                         orderLineEntity.id,
-                        new QProduct(
+                        new QProductInfoInOrderLineDTO(
                                 productEntity.id,
                                 new QShop(
                                         shopEntity.shopId,
@@ -40,10 +42,7 @@ public class CustomOrderLineRepository {
                                         shopEntity.shopDescription
                                 ),
                                 productEntity.productName,
-                                productEntity.productPrice,
-                                productEntity.productStockQty,
-                                productEntity.productDescription,
-                                productEntity.sellStatus
+                                productEntity.productDescription
                         ),
                         orderLineEntity.orderQuantity,
                         orderLineEntity.totalAmount,

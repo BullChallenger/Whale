@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.whale.domain.order.dto.CreatePurchaseOrderRequestDTO;
 import com.example.whale.domain.order.dto.PurchaseOrderLineRequestDTO;
+import com.example.whale.domain.order.dto.ReadOrderLinesResponseDTO;
 import com.example.whale.domain.order.entity.OrderEntity;
 import com.example.whale.domain.order.entity.OrderLineEntity;
 import com.example.whale.domain.order.model.Order;
-import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.order.repository.OrderLineRepository;
 import com.example.whale.domain.order.repository.OrderRepository;
 import com.example.whale.domain.order.repository.querydsl.CustomOrderLineRepository;
@@ -92,7 +92,7 @@ public class OrderService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<OrderLine> readOrderLinesByOrderId(String orderId) {
+	public List<ReadOrderLinesResponseDTO> readOrderLinesByOrderId(String orderId) {
 		return customOrderLineRepository.readOrderLinesInOrder(orderId);
 	}
 

@@ -1,13 +1,7 @@
 package com.example.whale.domain.order.controller;
 
-import com.example.whale.domain.common.dto.ResponseDTO;
-import com.example.whale.domain.order.dto.CreatePurchaseOrderRequestDTO;
-import com.example.whale.domain.order.entity.OrderEntity;
-import com.example.whale.domain.order.model.Order;
-import com.example.whale.domain.order.model.OrderLine;
-import com.example.whale.domain.order.service.OrderService;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.whale.domain.common.dto.ResponseDTO;
+import com.example.whale.domain.order.dto.CreatePurchaseOrderRequestDTO;
+import com.example.whale.domain.order.dto.ReadOrderLinesResponseDTO;
+import com.example.whale.domain.order.model.Order;
+import com.example.whale.domain.order.service.OrderService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class OrderController {
     }
 
     @GetMapping(value = "/read/orderLines/{orderId}")
-    public ResponseDTO<List<OrderLine>> readOrderLinesByOrderId(@PathVariable(value = "orderId") String orderId) {
+    public ResponseDTO<List<ReadOrderLinesResponseDTO>> readOrderLinesByOrderId(@PathVariable(value = "orderId") String orderId) {
         return ResponseDTO.ok(orderService.readOrderLinesByOrderId(orderId));
     }
 
