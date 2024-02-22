@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ShopService {
-
+	
 	private final ShopRepository shopRepository;
 	private final CustomShopRepository customShopRepository;
 	private final OrderLineRepository orderLineRepository;

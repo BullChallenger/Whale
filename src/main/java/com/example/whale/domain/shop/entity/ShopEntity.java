@@ -1,6 +1,5 @@
 package com.example.whale.domain.shop.entity;
 
-import com.querydsl.core.annotations.QueryProjection;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
