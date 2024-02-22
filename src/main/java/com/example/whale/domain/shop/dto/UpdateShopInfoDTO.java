@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class UpdateShopInfoDTO {
-
+	
 	private final Long shopId;
 	private final String shopName;
 	private final String shopDescription;
