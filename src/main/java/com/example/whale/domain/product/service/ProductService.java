@@ -12,7 +12,6 @@ import com.example.whale.domain.product.model.Product;
 import com.example.whale.domain.product.repository.ProductRepository;
 import com.example.whale.domain.product.repository.querydsl.CustomProductRepository;
 import com.example.whale.domain.shop.entity.ShopEntity;
-import com.example.whale.domain.shop.model.Shop;
 import com.example.whale.domain.shop.repository.ShopRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-
+	
 	private final ProductRepository productRepository;
 	private final CustomProductRepository customProductRepository;
 	private final ShopRepository shopRepository;

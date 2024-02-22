@@ -3,9 +3,6 @@ package com.example.whale.domain.product.repository.querydsl;
 import static com.example.whale.domain.product.entity.QProductEntity.*;
 import static com.example.whale.domain.shop.entity.QShopEntity.*;
 
-import com.example.whale.domain.product.entity.ProductEntity;
-import com.querydsl.core.types.Projections;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
