@@ -14,8 +14,8 @@ import com.example.whale.domain.delivery.model.Delivery;
 import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.shop.dto.ConfirmOrderDTO;
 import com.example.whale.domain.shop.dto.DeliveryOrderRequestDTO;
-import com.example.whale.domain.shop.dto.UpdateShopInfoDTO;
 import com.example.whale.domain.shop.dto.ShopRegisterRequestDTO;
+import com.example.whale.domain.shop.dto.UpdateShopInfoDTO;
 import com.example.whale.domain.shop.service.ShopService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/shops")
 public class ShopController {
-
+	
 	private final ShopService shopService;
 
 	@PostMapping(value = "/register")

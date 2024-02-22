@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-	
+
 	private final ProductRepository productRepository;
 	private final CustomProductRepository customProductRepository;
 	private final ShopRepository shopRepository;
