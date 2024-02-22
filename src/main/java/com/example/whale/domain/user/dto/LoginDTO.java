@@ -1,6 +1,7 @@
 package com.example.whale.domain.user.dto;
 
 import com.example.whale.domain.user.model.AuthenticationUser;
+
 import lombok.Getter;
 
 public class LoginDTO {

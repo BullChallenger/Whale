@@ -1,12 +1,13 @@
 package com.example.whale.domain.user.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class WriterResponseDTO {
-
+    
     private final Long writerId;
     private final String writerNickname;
 

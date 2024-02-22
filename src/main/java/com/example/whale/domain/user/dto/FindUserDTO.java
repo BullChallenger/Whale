@@ -1,6 +1,7 @@
 package com.example.whale.domain.user.dto;
 
 import com.example.whale.domain.user.entity.UserEntity;
+
 import lombok.Builder;
 import lombok.Getter;
 
