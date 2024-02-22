@@ -1,6 +1,7 @@
 package com.example.whale.domain.common.dto;
 
 import com.example.whale.global.exception.BaseException;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
