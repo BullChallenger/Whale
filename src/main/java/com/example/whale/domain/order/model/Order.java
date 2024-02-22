@@ -2,6 +2,7 @@ package com.example.whale.domain.order.model;
 
 import java.math.BigDecimal;
 
+import com.example.whale.domain.delivery.model.Address;
 import com.example.whale.domain.order.entity.OrderEntity;
 import com.querydsl.core.annotations.QueryProjection;
 
@@ -14,15 +15,15 @@ public class Order {
 	private final String orderId;
 	private final Long customerId;
 	private final BigDecimal totalAmountOfOrder;
-	private final Long destinationId;
+	private final Address destination;
 
 	@Builder
 	@QueryProjection
-	public Order(String orderId, Long customerId, BigDecimal totalAmountOfOrder, Long destinationId) {
+	public Order(String orderId, Long customerId, BigDecimal totalAmountOfOrder, Address destination) {
 		this.orderId = orderId;
 		this.customerId = customerId;
 		this.totalAmountOfOrder = totalAmountOfOrder;
-		this.destinationId = destinationId;
+		this.destination = destination;
 	}
 
 	public static Order fromEntity(OrderEntity entity) {
@@ -30,7 +31,7 @@ public class Order {
 			.orderId(entity.getId())
 			.customerId(entity.getCustomerId())
 			.totalAmountOfOrder(entity.getTotalAmountOfOrder())
-			.destinationId(entity.getDestinationId())
+			.destination(Address.fromEntity(entity.getDestination()))
 			.build();
 	}
 

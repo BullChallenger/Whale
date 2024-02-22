@@ -104,9 +104,7 @@ public class ShopService {
 			() -> new EntityNotFoundException("존재하지 않는 주문입니다.")
 		);
 
-		AddressEntity destination = addressRepository.findById(orderLine.getOrder().getDestinationId()).orElseThrow(
-			() -> new EntityNotFoundException("해당 주소를 찾을 수 없습니다.")
-		);
+		AddressEntity destination = orderLine.getOrder().getDestination();
 
 		return startDelivery(saveDelivery(dto, orderLine, destination), getReceiverName(destination));
  	}

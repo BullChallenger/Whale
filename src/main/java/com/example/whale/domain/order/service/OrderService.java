@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.whale.domain.delivery.entity.AddressEntity;
+import com.example.whale.domain.delivery.repository.AddressRepository;
 import com.example.whale.domain.order.dto.CreatePurchaseOrderRequestDTO;
 import com.example.whale.domain.order.dto.PurchaseOrderLineRequestDTO;
 import com.example.whale.domain.order.dto.ReadOrderLinesResponseDTO;
@@ -37,11 +39,16 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final CustomOrderLineRepository customOrderLineRepository;
 	private final OrderLineRepository orderLineRepository;
+	private final AddressRepository addressRepository;
 
 	@Transactional
 	public Order createPurchaseOrder(CreatePurchaseOrderRequestDTO dto) {
 		Customer customer = customUserRepository.findCustomerById(dto.getUserId()).orElseThrow(
 			() -> new EntityNotFoundException("해당 고객을 찾을 수 없습니다.")
+		);
+
+		AddressEntity address = addressRepository.findById(dto.getDestinationId()).orElseThrow(
+			() -> new EntityNotFoundException("해당 주소를 찾을 수 없습니다.")
 		);
 
 		List<String> productIds = dto.getOrderLines().stream().map(PurchaseOrderLineRequestDTO::getProductId).toList();
@@ -53,7 +60,7 @@ public class OrderService {
 
 		order.getOrderLineCollection().addOrderLineInOrder(order, orderLines);
 		order.calculateTotalAmountOfOrder();
-		order.setDestinationIdForDelivery(dto.getDestinationId());
+		order.setDestinationForDelivery(address);
 
 		orderRepository.save(order);
 		orderLineRepository.saveAll(orderLines);

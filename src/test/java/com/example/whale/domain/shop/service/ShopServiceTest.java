@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.*;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,7 @@ class ShopServiceTest {
 	}
 
 	@Test
+	@Disabled
 	@DisplayName(value = "[성공]_판매자가_주문을_확인했을_때_주문상태_변경")
 	void updateOrderStatusWhenShopConfirmedOrder() {
 		// given

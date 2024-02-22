@@ -5,14 +5,17 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
 import com.example.whale.domain.common.entity.PersistableWrapper;
-import com.example.whale.domain.order.model.Order;
+import com.example.whale.domain.delivery.entity.AddressEntity;
 import com.example.whale.domain.user.model.Customer;
 
 import lombok.AccessLevel;
@@ -39,23 +42,16 @@ public class OrderEntity extends PersistableWrapper {
 
 	private BigDecimal totalAmountOfOrder;
 
-	private Long destinationId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "address_id")
+	private AddressEntity destination;
 
 	@Builder
-	public OrderEntity(String id, Long customerId, BigDecimal totalAmountOfOrder, Long destinationId) {
+	public OrderEntity(String id, Long customerId, BigDecimal totalAmountOfOrder, AddressEntity destination) {
 		this.id = id;
 		this.customerId = customerId;
 		this.totalAmountOfOrder = totalAmountOfOrder;
-		this.destinationId = destinationId;
-	}
-
-	public static OrderEntity of(Order order) {
-		return OrderEntity.builder()
-			.id(order.getOrderId())
-			.customerId(order.getCustomerId())
-			.totalAmountOfOrder(order.getTotalAmountOfOrder())
-			.destinationId(order.getDestinationId())
-			.build();
+		this.destination = destination;
 	}
 
 	public static OrderEntity of(Customer customer) {
@@ -73,8 +69,8 @@ public class OrderEntity extends PersistableWrapper {
 		this.totalAmountOfOrder = this.orderLineCollection.calculateTotalAmountOfOrder();
 	}
 
-	public void setDestinationIdForDelivery(Long destinationId) {
-		this.destinationId = destinationId;
+	public void setDestinationForDelivery(AddressEntity destination) {
+		this.destination = destination;
 	}
 
 }

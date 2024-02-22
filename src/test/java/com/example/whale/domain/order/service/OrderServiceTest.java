@@ -18,6 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import com.example.whale.domain.delivery.entity.AddressEntity;
+import com.example.whale.domain.delivery.repository.AddressRepository;
 import com.example.whale.domain.order.dto.CreatePurchaseOrderRequestDTO;
 import com.example.whale.domain.order.dto.PurchaseOrderLineRequestDTO;
 import com.example.whale.domain.order.entity.OrderEntity;
@@ -46,6 +48,8 @@ class OrderServiceTest {
 	private OrderRepository orderRepository;
 	@Mock
 	private OrderLineRepository orderLineRepository;
+	@Mock
+	private AddressRepository addressRepository;
 
 	@InjectMocks
 	private OrderService orderService;
@@ -79,6 +83,14 @@ class OrderServiceTest {
 			.build();
 	}
 
+	private AddressEntity returnAddressEntityValue(UserEntity receiver) {
+		return AddressEntity.builder()
+			.receiver(receiver)
+			.zipcode("111111")
+			.detailAddress("xxxx-xxxx")
+			.build();
+	}
+
 	private ProductEntity returnProductEntityValue() {
 		return ProductEntity.builder()
 			.productId(DUMMY_PRODUCT_ID)
@@ -96,10 +108,12 @@ class OrderServiceTest {
 	@DisplayName(value = "[성공]_주문_생성")
 	void createOrderSuccessTest() {
 		// given
+		UserEntity userEntity = returnUserEntityValue();
 		Mockito.doReturn(List.of(returnProductEntityValue())).when(productRepository).findProductsByIds(anyList());
-		Mockito.doReturn(Optional.ofNullable(Customer.fromEntity(returnUserEntityValue()))).when(customUserRepository).findCustomerById(1L);
+		Mockito.doReturn(Optional.ofNullable(Customer.fromEntity(userEntity))).when(customUserRepository).findCustomerById(1L);
 		Mockito.doReturn(returnOrderEntityValue()).when(orderRepository).save(any(OrderEntity.class));
 		Mockito.doReturn(List.of(returnOrderEntityValue())).when(orderLineRepository).saveAll(anyList());
+		Mockito.doReturn(Optional.ofNullable(returnAddressEntityValue(userEntity))).when(addressRepository).findById(anyLong());
 
 		// when
 		Order purchaseOrder = orderService.createPurchaseOrder(returnPurchaseOrderDTO());
