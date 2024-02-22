@@ -7,7 +7,7 @@ import com.example.whale.domain.article.entity.ArticleEntity;
 import com.example.whale.domain.attachment.dto.AttachmentToResource;
 import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
 import com.example.whale.domain.comment.dto.GetCommentResponseDTO;
-import com.example.whale.global.util.FileConverter;
+import com.example.whale.global.util.converter.FileConverter;
 import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Builder;

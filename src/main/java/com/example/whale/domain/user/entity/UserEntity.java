@@ -1,30 +1,23 @@
 package com.example.whale.domain.user.entity;
 
-import com.example.whale.global.util.RoleListConverter;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
-import com.example.whale.domain.Like.entity.LikeEntity;
-import com.example.whale.domain.article.entity.ArticleEntity;
 import com.example.whale.domain.common.entity.BaseEntity;
 import com.example.whale.global.constant.Role;
+import com.example.whale.global.util.converter.RoleListConverter;
 
 import lombok.AccessLevel;
 import lombok.Builder;

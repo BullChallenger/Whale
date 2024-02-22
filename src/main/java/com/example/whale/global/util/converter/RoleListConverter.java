@@ -1,4 +1,4 @@
-package com.example.whale.global.util;
+package com.example.whale.global.util.converter;
 
 import java.util.Arrays;
 import java.util.List;

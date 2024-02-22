@@ -1,9 +1,10 @@
-package com.example.whale.global.util;
+package com.example.whale.global.util.converter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.example.whale.domain.attachment.dto.AttachmentToResource;
 import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class FileConverter {
 
