@@ -1,9 +1,8 @@
 package com.example.whale.domain.product.entity;
 
-import com.example.whale.domain.common.entity.PersistableWrapper;
 import java.math.BigDecimal;
-
 import java.util.UUID;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,7 +16,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
-import com.example.whale.domain.common.entity.BaseEntity;
+import com.example.whale.domain.common.entity.PersistableWrapper;
 import com.example.whale.domain.product.constant.SellStatus;
 import com.example.whale.domain.product.model.Product;
 import com.example.whale.domain.shop.entity.ShopEntity;
@@ -26,7 +25,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Persistable;
 
 @Entity
 @Getter
