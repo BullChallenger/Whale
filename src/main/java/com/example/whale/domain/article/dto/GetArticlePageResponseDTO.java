@@ -2,6 +2,7 @@ package com.example.whale.domain.article.dto;
 
 import com.example.whale.domain.user.dto.WriterResponseDTO;
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Builder;
 import lombok.Getter;
 

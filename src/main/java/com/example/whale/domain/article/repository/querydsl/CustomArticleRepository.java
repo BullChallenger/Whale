@@ -5,13 +5,6 @@ import static com.example.whale.domain.attachment.entity.QAttachmentEntity.*;
 import static com.example.whale.domain.comment.entity.QCommentEntity.*;
 import static com.example.whale.domain.user.entity.QUserEntity.*;
 
-import com.example.whale.domain.article.dto.GetArticleResponseConvertDTO;
-import com.example.whale.domain.article.dto.GetArticleResponseDTOV2;
-import com.example.whale.domain.article.dto.QGetArticleResponseDTOV2;
-import com.example.whale.domain.article.entity.QArticleEntity;
-import com.example.whale.domain.attachment.entity.QAttachmentEntity;
-import com.example.whale.domain.comment.entity.QCommentEntity;
-import com.example.whale.domain.user.entity.QUserEntity;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -20,14 +13,21 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import com.example.whale.domain.article.dto.GetArticlePageResponseDTO;
+import com.example.whale.domain.article.dto.GetArticleResponseConvertDTO;
 import com.example.whale.domain.article.dto.GetArticleResponseDTO;
+import com.example.whale.domain.article.dto.GetArticleResponseDTOV2;
 import com.example.whale.domain.article.dto.QGetArticlePageResponseDTO;
 import com.example.whale.domain.article.dto.QGetArticleResponseDTO;
+import com.example.whale.domain.article.dto.QGetArticleResponseDTOV2;
+import com.example.whale.domain.article.entity.QArticleEntity;
 import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
 import com.example.whale.domain.attachment.dto.QGetAttachmentResponseDTO;
+import com.example.whale.domain.attachment.entity.QAttachmentEntity;
 import com.example.whale.domain.comment.dto.GetCommentResponseDTO;
 import com.example.whale.domain.comment.dto.QGetCommentResponseDTO;
+import com.example.whale.domain.comment.entity.QCommentEntity;
 import com.example.whale.domain.user.dto.QWriterResponseDTO;
+import com.example.whale.domain.user.entity.QUserEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;

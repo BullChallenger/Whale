@@ -1,13 +1,15 @@
 package com.example.whale.domain.article.service;
 
-import com.example.whale.domain.Like.service.LikeService;
-import com.example.whale.domain.article.dto.GetArticleResponseConvertDTO;
-import com.example.whale.domain.article.dto.GetArticlePageResponseDTO;
-import com.example.whale.domain.article.dto.GetArticleResponseDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import com.example.whale.domain.Like.service.LikeService;
+import com.example.whale.domain.article.dto.GetArticlePageResponseDTO;
+import com.example.whale.domain.article.dto.GetArticleResponseConvertDTO;
+import com.example.whale.domain.article.dto.GetArticleResponseDTO;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

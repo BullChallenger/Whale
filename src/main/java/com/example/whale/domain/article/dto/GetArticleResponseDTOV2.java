@@ -1,6 +1,7 @@
 package com.example.whale.domain.article.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Getter;
 
 @Getter

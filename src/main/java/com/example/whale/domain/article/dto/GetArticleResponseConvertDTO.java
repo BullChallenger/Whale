@@ -1,12 +1,14 @@
 package com.example.whale.domain.article.dto;
 
-import com.example.whale.domain.attachment.dto.AttachmentToResource;
-import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
-import com.example.whale.domain.comment.dto.GetCommentResponseDTO;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.example.whale.domain.attachment.dto.AttachmentToResource;
+import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
+import com.example.whale.domain.comment.dto.GetCommentResponseDTO;
+
 import lombok.Builder;
 import lombok.Getter;
 

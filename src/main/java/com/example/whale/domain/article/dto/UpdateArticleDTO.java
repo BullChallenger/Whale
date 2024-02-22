@@ -1,13 +1,14 @@
 package com.example.whale.domain.article.dto;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.example.whale.domain.article.entity.ArticleEntity;
 import com.example.whale.domain.attachment.dto.GetAttachmentResponseDTO;
 import com.example.whale.domain.attachment.entity.AttachmentEntity;
+
 import lombok.Builder;
 import lombok.Getter;
-
-import java.io.IOException;
-import java.util.List;
 
 public class UpdateArticleDTO {
 
