@@ -1,23 +1,26 @@
 package com.example.whale.domain.user.service;
 
-import com.example.whale.global.constant.Role;
-import com.example.whale.domain.user.entity.UserEntity;
+import java.util.List;
+
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.example.whale.domain.user.dto.FindUserDTO.FindUserResponseDTO;
 import com.example.whale.domain.user.dto.SignUpDTO.SignUpRequestDTO;
 import com.example.whale.domain.user.dto.UpdateUserDTO.UpdateUserRequestDTO;
 import com.example.whale.domain.user.dto.UpdateUserDTO.UpdateUserResponseDTO;
+import com.example.whale.domain.user.entity.UserEntity;
 import com.example.whale.domain.user.repository.UserRepository;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import com.example.whale.global.constant.Role;
 
-import javax.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
+    
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
