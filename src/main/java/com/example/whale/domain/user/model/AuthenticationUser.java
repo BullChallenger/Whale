@@ -1,16 +1,18 @@
 package com.example.whale.domain.user.model;
 
-import com.example.whale.domain.user.entity.UserEntity;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.example.whale.domain.user.entity.UserEntity;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.Set;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthenticationUser implements UserDetails, Serializable {
