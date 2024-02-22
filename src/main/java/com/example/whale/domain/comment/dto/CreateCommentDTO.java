@@ -1,10 +1,11 @@
 package com.example.whale.domain.comment.dto;
 
+import java.util.List;
+
 import com.example.whale.domain.comment.entity.CommentEntity;
+
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 public class CreateCommentDTO {
 

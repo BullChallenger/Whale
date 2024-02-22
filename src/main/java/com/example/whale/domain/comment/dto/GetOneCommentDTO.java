@@ -2,6 +2,7 @@ package com.example.whale.domain.comment.dto;
 
 import com.example.whale.domain.comment.entity.CommentEntity;
 import com.querydsl.core.annotations.QueryProjection;
+
 import lombok.Builder;
 import lombok.Getter;
 

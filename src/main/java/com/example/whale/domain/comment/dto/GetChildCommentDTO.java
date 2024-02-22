@@ -1,6 +1,7 @@
 package com.example.whale.domain.comment.dto;
 
 import com.example.whale.domain.comment.entity.CommentEntity;
+
 import lombok.Builder;
 import lombok.Getter;
 

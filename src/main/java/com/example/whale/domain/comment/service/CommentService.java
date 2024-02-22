@@ -1,23 +1,26 @@
 package com.example.whale.domain.comment.service;
 
+import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
+
+import org.springframework.stereotype.Service;
+
 import com.example.whale.domain.article.entity.ArticleEntity;
-import com.example.whale.domain.comment.entity.CommentEntity;
-import com.example.whale.domain.user.entity.UserEntity;
+import com.example.whale.domain.article.repository.ArticleRepository;
 import com.example.whale.domain.comment.dto.CreateCommentDTO.CreateCommentRequestDTO;
 import com.example.whale.domain.comment.dto.CreateCommentDTO.CreateCommentResponseDTO;
 import com.example.whale.domain.comment.dto.GetCommentResponseDTO;
 import com.example.whale.domain.comment.dto.GetOneCommentDTO;
 import com.example.whale.domain.comment.dto.UpdateCommentRequestDTO;
-import com.example.whale.domain.article.repository.ArticleRepository;
+import com.example.whale.domain.comment.entity.CommentEntity;
 import com.example.whale.domain.comment.repository.CommentRepository;
-import com.example.whale.domain.user.repository.UserRepository;
 import com.example.whale.domain.comment.repository.querydsl.CustomCommentRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.example.whale.domain.user.entity.UserEntity;
+import com.example.whale.domain.user.repository.UserRepository;
 
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
-import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional

@@ -1,21 +1,34 @@
 package com.example.whale.domain.comment.entity;
 
-import com.example.whale.domain.article.entity.ArticleEntity;
-import com.example.whale.domain.common.entity.BaseEntity;
-import com.example.whale.domain.user.entity.UserEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import static javax.persistence.FetchType.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.example.whale.domain.article.entity.ArticleEntity;
+import com.example.whale.domain.common.entity.BaseEntity;
+import com.example.whale.domain.user.entity.UserEntity;
 
-import static javax.persistence.FetchType.LAZY;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
