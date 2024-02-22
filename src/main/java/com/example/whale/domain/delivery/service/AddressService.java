@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AddressService {
-
+	
 	private final UserRepository userRepository;
 	private final AddressRepository addressRepository;
 	private final CustomAddressRepository customAddressRepository;
