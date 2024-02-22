@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class ProductStock {
-
+    
     private long productStockQty;
 
     public ProductStock(long productStockQty) {
