@@ -1,10 +1,12 @@
 package com.example.whale.domain.attachment.repository.querydsl;
 
-import static com.example.whale.domain.attachment.entity.QAttachmentEntity.attachmentEntity;
+import static com.example.whale.domain.attachment.entity.QAttachmentEntity.*;
+
+import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor

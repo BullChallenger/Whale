@@ -1,7 +1,5 @@
 package com.example.whale.domain.attachment.entity;
 
-import com.example.whale.domain.common.entity.BaseEntity;
-import com.example.whale.domain.article.entity.ArticleEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,6 +11,9 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Where;
+
+import com.example.whale.domain.article.entity.ArticleEntity;
+import com.example.whale.domain.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
 import lombok.Builder;

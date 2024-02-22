@@ -1,11 +1,12 @@
 package com.example.whale.domain.attachment.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
-import lombok.Builder;
-import lombok.Getter;
-
 import java.io.IOException;
 import java.io.Serializable;
+
+import com.querydsl.core.annotations.QueryProjection;
+
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 public class GetAttachmentResponseDTO implements Serializable {
