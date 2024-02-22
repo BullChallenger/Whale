@@ -1,6 +1,6 @@
 package com.example.whale.domain.Like.repository.querydsl;
 
-import static com.example.whale.domain.Like.entity.QLikeEntity.likeEntity;
+import static com.example.whale.domain.Like.entity.QLikeEntity.*;
 
 import org.springframework.stereotype.Repository;
 

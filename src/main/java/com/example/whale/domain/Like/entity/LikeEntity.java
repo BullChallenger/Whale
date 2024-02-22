@@ -1,7 +1,5 @@
 package com.example.whale.domain.Like.entity;
 
-import com.example.whale.domain.article.entity.ArticleEntity;
-import com.example.whale.domain.user.entity.UserEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,12 +8,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.example.whale.domain.article.entity.ArticleEntity;
+import com.example.whale.domain.user.entity.UserEntity;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter

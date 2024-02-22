@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class LikeService {
-
+    
     private final CustomUserRepository customUserRepository;
     private final CustomArticleRepository customArticleRepository;
     private final CacheLikeRepository cacheLikeRepository;
