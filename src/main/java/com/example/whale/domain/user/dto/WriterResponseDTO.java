@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class WriterResponseDTO {
-    
+
     private final Long writerId;
     private final String writerNickname;
 
