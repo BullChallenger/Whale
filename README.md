@@ -23,7 +23,6 @@ ___
 - 🐬 case2 : AccessToken 은 유효하지만, RefreshToken은 만료된 경우 →  AccessToken 을 검증하여 RefreshToken 재발급
 - 🐬 case3 : AccessToken 과 RefreshToken 모두가 만료된 경우 → 에러 발생 (재 로그인하여 둘다 새로 발급)
 
-
 ---
 
 ### ERD Table
@@ -33,3 +32,14 @@ ___
 ---
 
 ![image](docs/resource/erd-v2.png)
+
+---
+
+### 🕶 Ecommerce 관련 도메인 추가
+
+![image](docs/resource/Drawing%202024-02-05%2015.08.21.excalidraw.png)
+**예상되는 전체적인 Ecommerce 도메인의 모습(추후 변경 가능성 높음)**
+
+- 개인적으로 Ecommerce 도메인에서 가장 중요한 기능은 바로 주문이라고 생각함.
+- 주문 진행 방식에 대해 좀 더 잘 이해하기 위해서 아래와 같이 주문의 흐름을 그림으로 표현
+![image](docs/resource/Drawing%202024-02-07%2009.15.39.excalidraw.png)
