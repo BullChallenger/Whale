@@ -8,11 +8,6 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.whale.domain.delivery.entity.AddressEntity;
-import com.example.whale.domain.delivery.entity.DeliveryEntity;
-import com.example.whale.domain.delivery.model.Delivery;
-import com.example.whale.domain.delivery.repository.AddressRepository;
-import com.example.whale.domain.delivery.repository.DeliveryRepository;
 import com.example.whale.domain.order.constant.OrderStatus;
 import com.example.whale.domain.order.dto.ReadOrderLineForShopDTO;
 import com.example.whale.domain.order.entity.OrderLineEntity;
@@ -20,7 +15,6 @@ import com.example.whale.domain.order.model.OrderLine;
 import com.example.whale.domain.order.repository.OrderLineRepository;
 import com.example.whale.domain.order.repository.querydsl.CustomOrderLineRepository;
 import com.example.whale.domain.shop.dto.ConfirmOrderDTO;
-import com.example.whale.domain.shop.dto.DeliveryOrderRequestDTO;
 import com.example.whale.domain.shop.dto.ShopRegisterRequestDTO;
 import com.example.whale.domain.shop.dto.UpdateShopInfoDTO;
 import com.example.whale.domain.shop.entity.ShopEntity;
@@ -37,8 +31,6 @@ public class ShopService {
 	private final CustomShopRepository customShopRepository;
 	private final OrderLineRepository orderLineRepository;
 	private final CustomOrderLineRepository customOrderLineRepository;
-	private final AddressRepository addressRepository;
-	private final DeliveryRepository deliveryRepository;
 
 	@Transactional
 	public void register(ShopRegisterRequestDTO dto) {
@@ -97,29 +89,6 @@ public class ShopService {
 	// TODO: 미완
 	public List<ReadOrderLineForShopDTO> readOrderLinesForShop(Long shopId) {
 		return customOrderLineRepository.readOrderLinesForShop(shopId);
-	}
-
-	public Delivery orderDelivery(DeliveryOrderRequestDTO dto) {
-		OrderLineEntity orderLine = orderLineRepository.findById(dto.getOrderLineId()).orElseThrow(
-			() -> new EntityNotFoundException("존재하지 않는 주문입니다.")
-		);
-
-		AddressEntity destination = orderLine.getOrder().getDestination();
-
-		return startDelivery(saveDelivery(dto, orderLine, destination), getReceiverName(destination));
- 	}
-
-	private static String getReceiverName(AddressEntity destination) {
-		return destination.getReceiver().getUsername();
-	}
-
-	private Delivery startDelivery(DeliveryEntity entity, String receiverName) {
-		entity.getOrderLine().updateOrderStatus(OrderStatus.DELIVERY);
-		return Delivery.fromEntity(entity, receiverName);
-	}
-
-	private DeliveryEntity saveDelivery(DeliveryOrderRequestDTO dto, OrderLineEntity orderLine, AddressEntity destination) {
-		return deliveryRepository.save(DeliveryEntity.of(dto.getCourierCompany(), dto.getDeliveryFee(), orderLine, destination));
 	}
 
 }
